@@ -1,0 +1,42 @@
+### Java ###
+*.class
+*.jar
+*.war
+*.ear
+*.iml
+
+### Logs ###
+*.log
+
+### Maven ###
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+
+### Gradle ###
+.gradle/
+build/
+!gradle-wrapper.jar
+
+### IntelliJ IDEA ###
+.idea/
+*.iws
+*.ipr
+*.iml
+out/
+
+### VS Code ###
+.vscode/
+
+### OS-specific ###
+.DS_Store
+Thumbs.db
+
+### Environment / Security ###
+*.env
+*.key
+*.crt
+*.pem
