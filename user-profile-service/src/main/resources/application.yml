@@ -1,0 +1,9 @@
+spring:
+  application:
+    name: user-profile-service
+
+  datasource:
+    url: ${spring_datasource_url}
+    username: ${spring_datasource_username}
+    password: ${spring_datasource_password}
+    driver-class-name: ${spring_datasource_driver_class_name}
