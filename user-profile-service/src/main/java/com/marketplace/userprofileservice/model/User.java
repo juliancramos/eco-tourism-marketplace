@@ -19,11 +19,11 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "keycloak_user_id", length = 100)  // ID from Keycloak
+    private String keycloakUserId;
+
     @Column(nullable = false, length = 320, unique = true)
     private String email;
-
-    @Column(nullable = false)
-    private String password;
 
     @Column(nullable = false, length = 120)
     private String name;

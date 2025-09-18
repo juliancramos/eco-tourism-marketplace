@@ -19,6 +19,7 @@ public interface UserMapper {
     @Mapping(target = "provider", ignore = true)
     @Mapping(target = "active", ignore = true)
     @Mapping(target = "roles", ignore = true) // Assign at service
+    //@Mapping (target = "password", ignore = true) //no password in DB, only in keycloak
     User fromCreateRequest(CreateUserRequestDTO request);
 
     
