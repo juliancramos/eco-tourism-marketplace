@@ -10,6 +10,7 @@ import com.marketplace.userprofileservice.model.Role;
 import com.marketplace.userprofileservice.model.User;
 import com.marketplace.userprofileservice.repository.RoleRepository;
 import com.marketplace.userprofileservice.repository.UserRepository;
+import com.marketplace.userprofileservice.service.KeycloakService;
 import com.marketplace.userprofileservice.service.UserService;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -29,6 +30,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final UserMapper userMapper;
+    private final KeycloakService keycloakService;
 
     @Override
     @Transactional
@@ -83,7 +85,15 @@ public class UserServiceImpl implements UserService {
         user.setRoles(roles);
 
 
-        return userRepository.save(user);
+        try {
+            String keycloakUserId = keycloakService.createKeycloakUser(request, roleName);
+            user.setKeycloakUserId(keycloakUserId); 
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to create user in Keycloak: " + e.getMessage(), e);
+        }
+
+        return userRepository.save(user); 
+    
     }
 
 

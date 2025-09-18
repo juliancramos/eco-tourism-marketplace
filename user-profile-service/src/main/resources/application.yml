@@ -51,3 +51,11 @@ info:
       name: eco-tourism-marketplace
     build:
       time: ${BUILD_TIME:2024-08-21T12:30:00Z}
+
+keycloak:
+  server-url: http://localhost:9000
+  realm: marketplace-realm
+  client-id: admin-cli
+  client-secret: ""
+  username: admin         
+  password: admin        
