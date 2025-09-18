@@ -11,12 +11,15 @@ import com.marketplace.userprofileservice.model.User;
 import com.marketplace.userprofileservice.repository.RoleRepository;
 import com.marketplace.userprofileservice.repository.UserRepository;
 import com.marketplace.userprofileservice.service.UserService;
+
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -82,6 +85,63 @@ public class UserServiceImpl implements UserService {
 
         return userRepository.save(user);
     }
+
+
+    @Override
+    @Transactional
+    public UserDTO getById(Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + id));
+        return userMapper.toDTO(user);
+    }
+
+    @Override
+    @Transactional
+    public UserDTO getByName(String name) {
+        User user = userRepository.findByName(name)
+                .orElseThrow(() -> new EntityNotFoundException("User not found with name: " + name));
+        return userMapper.toDTO(user);
+    }
+
+    @Override
+    @Transactional
+    public List<UserDTO> getAll() {
+        return userRepository.findAll()
+                .stream()
+                .map(userMapper::toDTO)
+                .toList();
+    }
+
+    @Override
+    @Transactional
+    public UserDTO update(Long id, UserDTO dto) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + id));
+
+        // Update only if fields are not null
+        if (dto.getName() != null && !dto.getName().isBlank()) {
+            user.setName(dto.getName());
+        }
+
+        if (dto.getImgUrl() != null && !dto.getImgUrl().isBlank()) {
+            user.setImgUrl(dto.getImgUrl());
+        }
+
+        // email and password don't change here (dedicated endpoints for that)
+
+        User updated = userRepository.save(user);
+        return userMapper.toDTO(updated);
+    }
+
+
+    @Override
+    @Transactional
+    public void delete(Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + id));
+        userRepository.delete(user);
+    }
+
 
 
 }
