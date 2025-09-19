@@ -53,7 +53,7 @@ info:
       time: ${BUILD_TIME:2024-08-21T12:30:00Z}
 
 keycloak:
-  server-url: http://localhost:9000
+  server-url: https://e73d150e7cc3.ngrok-free.app #keycloak url in virtual machine using ngrok
   realm: marketplace-realm
   client-id: admin-cli
   client-secret: ""

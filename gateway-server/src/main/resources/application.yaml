@@ -20,7 +20,7 @@ spring:
           # This is used within the subnet where the 
           # microservices are deployed
           # This URL does not need to be accessible from outside        
-          jwk-set-uri: http://localhost:9000/realms/marketplace-realm/protocol/openid-connect/certs
+          jwk-set-uri: https://e73d150e7cc3.ngrok-free.app/realms/marketplace-realm/protocol/openid-connect/certs
 
 eureka:
   client:
