@@ -1,6 +1,6 @@
 package com.marketplace.servicecatalog.dto;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public record ServiceDTO(
@@ -15,6 +15,6 @@ public record ServiceDTO(
     String countryCode,
     String cityCode,
     String address,
-    Instant creationDate,
+    LocalDateTime creationDate,
     List<ServiceImageDTO> images
 ) {}
