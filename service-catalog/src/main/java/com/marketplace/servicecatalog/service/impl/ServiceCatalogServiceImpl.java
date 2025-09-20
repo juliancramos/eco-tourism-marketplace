@@ -7,20 +7,22 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.marketplace.servicecatalog.dto.CreateServiceCategoryDTO;
 import com.marketplace.servicecatalog.dto.CreateServiceDTO;
 import com.marketplace.servicecatalog.dto.ServiceCategoryDTO;
 import com.marketplace.servicecatalog.dto.ServiceDTO;
 import com.marketplace.servicecatalog.dto.UpdateServiceDTO;
 import com.marketplace.servicecatalog.mapper.ServiceMapper;
+import com.marketplace.servicecatalog.model.ServiceCategory;
 import com.marketplace.servicecatalog.model.ServiceEntity;
 import com.marketplace.servicecatalog.repository.ServiceCategoryRepository;
 import com.marketplace.servicecatalog.repository.ServiceRepository;
 import com.marketplace.servicecatalog.service.ServiceCatalogService;
 
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
 
 @Service
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class ServiceCatalogServiceImpl implements ServiceCatalogService {
 
     private final ServiceRepository serviceRepository;
@@ -66,11 +68,18 @@ public class ServiceCatalogServiceImpl implements ServiceCatalogService {
         return page.map(ServiceMapper::toDto);
     }
 
+    public ServiceCategoryDTO createCategory(CreateServiceCategoryDTO dto) {
+        var c = new ServiceCategory();
+        c.setName(dto.name());
+        c = categoryRepository.save(c);
+        return new ServiceCategoryDTO(c.getId(), c.getName());
+    }
+
     @Override
     public ServiceDTO create(CreateServiceDTO dto) {
-        var e = new com.marketplace.servicecatalog.model.ServiceEntity();
+        var e = new ServiceEntity();
         Long newId = System.currentTimeMillis();
-        ServiceMapper.applyCreate(e, dto, newId, Instant.now());
+        ServiceMapper.applyCreate(e, dto, Instant.now());
         e = serviceRepository.save(e);
         return ServiceMapper.toDto(e);
     }

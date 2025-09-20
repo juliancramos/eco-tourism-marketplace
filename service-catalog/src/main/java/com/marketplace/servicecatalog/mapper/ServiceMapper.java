@@ -17,7 +17,7 @@ public class ServiceMapper {
     List<ServiceImageDTO> imgs;
       imgs = e.getImages() == null ? List.of() :
               e.getImages().stream()
-                      .map(i -> new ServiceImageDTO(i.getId(), i.getUrl(), i.getPosition()))
+                      .map(i -> new ServiceImageDTO( i.getUrl(), i.getPosition()))
                       .toList();
 
     Boolean isActive = Boolean.TRUE.equals(e.getActive());
@@ -38,8 +38,8 @@ public class ServiceMapper {
     );
   }
 
-  public static void applyCreate(ServiceEntity e, CreateServiceDTO dto, Long newId, Instant now) {
-    e.setId(newId);
+  public static void applyCreate(ServiceEntity e, CreateServiceDTO dto, Instant now) {
+
     e.setProviderId(dto.providerId());
     e.setCategoryId(dto.categoryId());
     e.setTitle(dto.title());
@@ -56,7 +56,6 @@ public class ServiceMapper {
       int idx = 0;
       for (ServiceImageDTO d : dto.images()) {
         ServiceImage i = new ServiceImage();
-        i.setId(newId * 1000 + idx++); // posibilidad de generación de id
         i.setService(e);
         i.setUrl(d.url());
         i.setPosition(d.position());
@@ -83,7 +82,6 @@ public class ServiceMapper {
       int idx = 0;
       for (ServiceImageDTO d : dto.images()) {
         ServiceImage i = new ServiceImage();
-        i.setId(dto.id() * 1000 + idx++);
         i.setService(e);
         i.setUrl(d.url());
         i.setPosition(d.position());

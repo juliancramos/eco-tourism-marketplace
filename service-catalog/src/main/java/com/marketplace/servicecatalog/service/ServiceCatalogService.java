@@ -3,6 +3,7 @@ package com.marketplace.servicecatalog.service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import com.marketplace.servicecatalog.dto.CreateServiceCategoryDTO;
 import com.marketplace.servicecatalog.dto.CreateServiceDTO;
 import com.marketplace.servicecatalog.dto.ServiceCategoryDTO;
 import com.marketplace.servicecatalog.dto.ServiceDTO;
@@ -14,7 +15,7 @@ public interface  ServiceCatalogService {
 
     Page<ServiceCategoryDTO> listCategories(Pageable pageable);
     Page<ServiceDTO> listServices(Long categoryId, String cityCode, Boolean active, Pageable pageable);
-
+    ServiceCategoryDTO createCategory(CreateServiceCategoryDTO name);
 
     ServiceDTO create(CreateServiceDTO dto);
     ServiceDTO update(UpdateServiceDTO dto);
