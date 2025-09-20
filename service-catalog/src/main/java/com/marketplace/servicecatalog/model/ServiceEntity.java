@@ -1,6 +1,7 @@
 package com.marketplace.servicecatalog.model;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -67,7 +68,7 @@ public class ServiceEntity {
     private String address;
 
     @Column(name = "CREATION_DATE", nullable = false)
-    private Instant creationDate;
+    private LocalDateTime creationDate;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "service", cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("position ASC")

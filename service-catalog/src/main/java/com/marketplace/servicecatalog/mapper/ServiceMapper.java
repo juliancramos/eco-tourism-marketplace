@@ -1,6 +1,6 @@
 package com.marketplace.servicecatalog.mapper;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,7 +38,7 @@ public class ServiceMapper {
     );
   }
 
-  public static void applyCreate(ServiceEntity e, CreateServiceDTO dto, Instant now) {
+  public static void applyCreate(ServiceEntity e, CreateServiceDTO dto, LocalDateTime now) {
 
     e.setProviderId(dto.providerId());
     e.setCategoryId(dto.categoryId());

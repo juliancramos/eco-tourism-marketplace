@@ -1,6 +1,6 @@
 package com.marketplace.servicecatalog.service.impl;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -79,7 +79,7 @@ public class ServiceCatalogServiceImpl implements ServiceCatalogService {
     public ServiceDTO create(CreateServiceDTO dto) {
         var e = new ServiceEntity();
         Long newId = System.currentTimeMillis();
-        ServiceMapper.applyCreate(e, dto, Instant.now());
+        ServiceMapper.applyCreate(e, dto, LocalDateTime.now());
         e = serviceRepository.save(e);
         return ServiceMapper.toDto(e);
     }
