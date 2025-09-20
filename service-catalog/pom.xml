@@ -78,18 +78,8 @@
 			<version>3.0.0</version>
 		</dependency>
         <dependency>
-            <groupId>com.graphql-java-kickstart</groupId>
-            <artifactId>graphql-java-tools</artifactId>
-            <version>12.0.0</version>
-        </dependency>
-        <dependency>
-        <groupId>org.springframework.graphql</groupId>
-        <artifactId>spring-graphql</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.graphql-java</groupId>
-            <artifactId>graphql-spring-boot-starter</artifactId>
-            <version>5.0.2</version>
+            <groupId>org.springframework.graphql</groupId>
+            <artifactId>spring-graphql</artifactId>
         </dependency>
     </dependencies>
     <dependencyManagement>

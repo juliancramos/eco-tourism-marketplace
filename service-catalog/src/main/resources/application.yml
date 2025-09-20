@@ -3,7 +3,7 @@ spring:
         name: "service-catalog"
 
     config:
-        import: optional:file:.env[.properties]
+        import: optional:file:.env
 
     datasource:
         url: ${spring_datasource_url}
@@ -11,6 +11,12 @@ spring:
         password: ${spring_datasource_password}
         driver-class-name: ${spring_datasource_driver_class_name}
 
+    graphql:
+        schema:
+            locations: classpath:graphql/
+        graphiql:
+          enabled: true
+          path: /graphiql
     jpa:
       show-sql: true
 
@@ -24,12 +30,7 @@ logging:
           jdbc:
             bind: trace
     
-    graphql:
-        schema:
-            locations: classpath:graphql/
-        graphiql:
-          enabled: true
-          path: /graphiql
+    
     
 server:
     port: 8082

@@ -1,18 +1,22 @@
-package graphql;
+package com.marketplace.servicecatalog.graphql;
 
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Controller;
 
+import com.marketplace.servicecatalog.dto.ServiceDTO;
+import com.marketplace.servicecatalog.mapper.ServiceMapper;
 import com.marketplace.servicecatalog.model.ServiceCategory;
-import com.marketplace.servicecatalog.model.ServiceEntity;
 import com.marketplace.servicecatalog.repository.ServiceCategoryRepository;
 import com.marketplace.servicecatalog.repository.ServiceRepository;
 
+import jakarta.transaction.Transactional;
+
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
 
-@Component
+@Controller
 public class ServiceGraphQLResolver {
     private final ServiceRepository serviceRepository;
     private final ServiceCategoryRepository categoryRepository;
@@ -24,13 +28,27 @@ public class ServiceGraphQLResolver {
     }
 
     @QueryMapping
-    public List<ServiceEntity> allServices() {
-        return serviceRepository.findAll();
+    public String hello() {
+        System.out.println("Resolver hello ejecutado");
+        return "Hola GraphQL";
     }
 
     @QueryMapping
-    public ServiceEntity serviceById(@Argument Long id) {
-        return serviceRepository.findById(id).orElse(null);
+    @Transactional
+    public List<ServiceDTO> allServices() {
+        List<ServiceDTO> services = serviceRepository.findAll()
+                .stream()
+                .map(ServiceMapper::toDto)
+                .collect(Collectors.toList());
+        System.out.println("Servicios encontrados: " + services.size());
+        return services;
+    }
+
+    @QueryMapping
+    public ServiceDTO serviceById(@Argument Long id) {
+        return serviceRepository.findById(id)
+                .map(ServiceMapper::toDto)
+                .orElse(null);
     }
 
     @QueryMapping

@@ -70,6 +70,7 @@ public class ServiceEntity {
     @Column(name = "CREATION_DATE", nullable = false)
     private LocalDateTime creationDate;
 
+    @Builder.Default
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "service", cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("position ASC")
     private List<ServiceImage> images = new ArrayList<>();

@@ -15,7 +15,6 @@ type Service {
 }
 
 type ServiceImage {
-    id: ID!
     url: String!
     position: Int!
 }
@@ -30,4 +29,5 @@ type Query {
     serviceById(id: ID!): Service
     allCategories: [ServiceCategory!]!
     categoryById(id: ID!): ServiceCategory
+    hello: String
 }
