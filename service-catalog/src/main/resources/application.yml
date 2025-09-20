@@ -11,6 +11,12 @@ spring:
         password: ${spring_datasource_password}
         driver-class-name: ${spring_datasource_driver_class_name}
     
+    graphql:
+        schema:
+            locations: classpath:graphql/
+        graphiql:
+          enabled: true
+          path: /graphiql
     
 server:
     port: 8082

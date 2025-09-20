@@ -1,0 +1,33 @@
+type Service {
+    id: ID!
+    providerId: ID!
+    categoryId: ID!
+    title: String!
+    description: String
+    price: Float!
+    currency: String!
+    active: Boolean!
+    countryCode: String!
+    cityCode: String!
+    address: String
+    creationDate: String!
+    images: [ServiceImage!]
+}
+
+type ServiceImage {
+    id: ID!
+    url: String!
+    position: Int!
+}
+
+type ServiceCategory {
+    id: ID!
+    name: String!
+}
+
+type Query {
+    allServices: [Service!]!
+    serviceById(id: ID!): Service
+    allCategories: [ServiceCategory!]!
+    categoryById(id: ID!): ServiceCategory
+}
