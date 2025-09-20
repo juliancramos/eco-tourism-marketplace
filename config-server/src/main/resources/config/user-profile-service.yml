@@ -1,0 +1,10 @@
+server:
+  port: 8081
+
+info:
+  app:
+    name: User profile Microservice
+    description: A microservice for the users profile operations
+    version: 1.0.0
+  build:
+    time: ${BUILD_TIME:2024-08-21T12:30:00Z}
