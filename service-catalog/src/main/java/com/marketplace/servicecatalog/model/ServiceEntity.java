@@ -24,10 +24,10 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "service")
+@Table(name = "SERVICE")
 @Builder
 
-public class Service {
+public class ServiceEntity {
 
     @Id
     @Column(name = "ID", precision = 19, scale = 0, nullable = false)

@@ -28,7 +28,7 @@ public class ServiceImage {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "SERVICE_ID", nullable = false)
-    private Service service;
+    private ServiceEntity service;
 
     @Column(name = "URL", length = 500, nullable = false)
     private String url;

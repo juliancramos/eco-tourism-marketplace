@@ -1,0 +1,90 @@
+package com.marketplace.servicecatalog.service.impl;
+
+import java.time.Instant;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.marketplace.servicecatalog.dto.CreateServiceDTO;
+import com.marketplace.servicecatalog.dto.ServiceCategoryDTO;
+import com.marketplace.servicecatalog.dto.ServiceDTO;
+import com.marketplace.servicecatalog.dto.UpdateServiceDTO;
+import com.marketplace.servicecatalog.mapper.ServiceMapper;
+import com.marketplace.servicecatalog.model.ServiceEntity;
+import com.marketplace.servicecatalog.repository.ServiceCategoryRepository;
+import com.marketplace.servicecatalog.repository.ServiceRepository;
+import com.marketplace.servicecatalog.service.ServiceCatalogService;
+
+import lombok.RequiredArgsConstructor;
+
+@Service
+@RequiredArgsConstructor
+public class ServiceCatalogServiceImpl implements ServiceCatalogService {
+
+    private final ServiceRepository serviceRepository;
+    private final ServiceCategoryRepository categoryRepository;
+
+    @Override
+    @Transactional
+    public ServiceCategoryDTO getCategory(Long id) {
+        var cat = categoryRepository.findById(id).orElseThrow();
+        return new ServiceCategoryDTO(cat.getId(), cat.getName());
+    }
+
+    @Override
+    @Transactional
+    public ServiceDTO getService(Long id) {
+        var e = serviceRepository.findById(id).orElseThrow();
+        return ServiceMapper.toDto(e);
+    }
+
+    @Override
+    @Transactional
+    public Page<ServiceCategoryDTO> listCategories(Pageable pageable) {
+        return categoryRepository
+                .findAll(pageable)
+                .map(c -> new ServiceCategoryDTO(c.getId(), c.getName()));
+    }
+
+    @Override
+    @Transactional
+    public Page<ServiceDTO> listServices(Long categoryId, String cityCode, Boolean active, Pageable pageable) {
+        Page<ServiceEntity> page;
+
+        if (categoryId != null && active != null) {
+            page = serviceRepository.findByCategoryIdAndActive(categoryId, active, pageable);
+        } else if (cityCode != null && active != null) {
+            page = serviceRepository.findByCityCodeAndActive(cityCode, active, pageable);
+        } else if (active != null) {
+            page = serviceRepository.findByActive(active, pageable);
+        } else {
+            page = serviceRepository.findAll(pageable);
+        }
+
+        return page.map(ServiceMapper::toDto);
+    }
+
+    @Override
+    public ServiceDTO create(CreateServiceDTO dto) {
+        var e = new com.marketplace.servicecatalog.model.ServiceEntity();
+        Long newId = System.currentTimeMillis();
+        ServiceMapper.applyCreate(e, dto, newId, Instant.now());
+        e = serviceRepository.save(e);
+        return ServiceMapper.toDto(e);
+    }
+
+    @Override
+    public ServiceDTO update(UpdateServiceDTO dto) {
+        var e = serviceRepository.findById(dto.id()).orElseThrow();
+        ServiceMapper.applyUpdate(e, dto);
+        e = serviceRepository.save(e);
+        return ServiceMapper.toDto(e);
+    }
+
+    @Override
+    public void delete(Long id) {
+        serviceRepository.deleteById(id);
+    }
+}

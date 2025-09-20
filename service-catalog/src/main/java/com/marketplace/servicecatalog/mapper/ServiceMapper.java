@@ -8,12 +8,12 @@ import com.marketplace.servicecatalog.dto.CreateServiceDTO;
 import com.marketplace.servicecatalog.dto.ServiceDTO;
 import com.marketplace.servicecatalog.dto.ServiceImageDTO;
 import com.marketplace.servicecatalog.dto.UpdateServiceDTO;
-import com.marketplace.servicecatalog.model.Service;
+import com.marketplace.servicecatalog.model.ServiceEntity;
 import com.marketplace.servicecatalog.model.ServiceImage;
 
 public class ServiceMapper {
 
-  public static ServiceDTO toDto(Service e) {
+  public static ServiceDTO toDto(ServiceEntity e) {
     List<ServiceImageDTO> imgs;
       imgs = e.getImages() == null ? List.of() :
               e.getImages().stream()
@@ -38,7 +38,7 @@ public class ServiceMapper {
     );
   }
 
-  public static void applyCreate(Service e, CreateServiceDTO dto, Long newId, Instant now) {
+  public static void applyCreate(ServiceEntity e, CreateServiceDTO dto, Long newId, Instant now) {
     e.setId(newId);
     e.setProviderId(dto.providerId());
     e.setCategoryId(dto.categoryId());
@@ -65,7 +65,7 @@ public class ServiceMapper {
     }
   }
 
-  public static void applyUpdate(Service e, UpdateServiceDTO dto) {
+  public static void applyUpdate(ServiceEntity e, UpdateServiceDTO dto) {
     e.setProviderId(dto.providerId());
     e.setCategoryId(dto.categoryId());
     e.setTitle(dto.title());
@@ -77,7 +77,7 @@ public class ServiceMapper {
     e.setCityCode(dto.cityCode());
     e.setAddress(dto.address());
 
-    // Reemplazo completo de imágenes (estrategia simple)
+    // Reemplazo de imágenes
     e.getImages().clear();
     if (dto.images() != null) {
       int idx = 0;
