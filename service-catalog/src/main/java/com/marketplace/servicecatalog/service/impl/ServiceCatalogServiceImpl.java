@@ -2,6 +2,7 @@ package com.marketplace.servicecatalog.service.impl;
 
 import java.time.LocalDateTime;
 
+import org.hibernate.Hibernate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -36,9 +37,11 @@ public class ServiceCatalogServiceImpl implements ServiceCatalogService {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public ServiceDTO getService(Long id) {
         var e = serviceRepository.findById(id).orElseThrow();
+        // inicializa explícitamente
+        Hibernate.initialize(e.getImages());
         return ServiceMapper.toDto(e);
     }
 
