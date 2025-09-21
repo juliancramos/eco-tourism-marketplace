@@ -9,6 +9,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,9 +27,10 @@ import lombok.Setter;
 @Builder
 public class Answer {
     @Id
-    @Column(name = "ID", precision = 19, scale = 0, nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ID", nullable = false)
     private Long id;
+
 
     @Column(name = "TEXT", length = 4000, nullable = false)
     private String text;
