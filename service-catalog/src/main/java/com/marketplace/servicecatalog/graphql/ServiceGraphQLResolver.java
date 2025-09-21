@@ -4,10 +4,6 @@ import org.springframework.stereotype.Controller;
 
 import com.marketplace.servicecatalog.dto.ServiceCategoryDTO;
 import com.marketplace.servicecatalog.dto.ServiceDTO;
-import com.marketplace.servicecatalog.mapper.ServiceMapper;
-import com.marketplace.servicecatalog.model.ServiceCategory;
-import com.marketplace.servicecatalog.repository.ServiceCategoryRepository;
-import com.marketplace.servicecatalog.repository.ServiceRepository;
 import com.marketplace.servicecatalog.service.ServiceCatalogService;
 
 import jakarta.transaction.Transactional;

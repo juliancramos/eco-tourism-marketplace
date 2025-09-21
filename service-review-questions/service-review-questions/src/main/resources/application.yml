@@ -1,0 +1,64 @@
+spring:
+    application:
+        name: service-review-questions
+
+    config:
+        import:
+        - optional:file:.env
+
+    datasource:
+        url: ${spring_datasource_url}
+        username: ${spring_datasource_username}
+        password: ${spring_datasource_password}
+        driver-class-name: ${spring_datasource_driver_class_name}
+
+logging:
+    level:
+        org:
+        hibernate:
+            SQL: debug
+            orm:
+            jdbc:
+            bind: trace
+
+server:
+    port: 8083
+
+eureka:
+    client:
+        register-with-eureka: true
+        service-url:
+            defaultZone: ${EUREKA_SERVER_URL:http://localhost:8761/eureka/}
+    instance:
+        prefer-ip-address: true
+
+## Actuator configuration
+management:
+    endpoints:
+        web:
+            exposure:
+                # Exposes monitoring for every endpoint
+                # through /actuator/metrics
+                include: "*"
+
+    endpoint:
+        health:
+        # Adds an endpoint to monitor service health
+        # /actuator/health
+            show-details: always
+
+    info:
+        env:
+        # Adds an endpoint to monitor environment info
+        # /actuator/env
+            enabled: true
+
+info:
+    app:
+        name: Service Catalog Microservice
+        description: A microservice for the service catalog funcionalities
+        version: 1.0.0
+    company:
+        name: eco-tourism-marketplace
+    build:
+        time: ${BUILD_TIME:2024-09-19T12:30:00Z}
