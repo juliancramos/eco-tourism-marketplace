@@ -17,4 +17,4 @@ public record ServiceDTO(
     String address,
     LocalDateTime creationDate,
     List<ServiceImageDTO> images
-) {}
+) {}    
