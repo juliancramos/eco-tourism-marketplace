@@ -1,0 +1,21 @@
+spring:
+    application:    
+        name: "cart-service"
+    
+    datasource:
+      url: ${spring_datasource_url}
+      username: ${spring_datasource_username}
+      password: ${spring_datasource_password}
+      driver-class-name: ${spring_datasource_driver_class_name}
+
+
+server:
+    port: 8085
+
+eureka:
+  client:
+    register-with-eureka: true
+    service-url:
+      defaultZone: ${EUREKA_SERVER_URL:http://localhost:8761/eureka/}
+  instance:
+    prefer-ip-address: true
