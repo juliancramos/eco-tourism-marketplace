@@ -1,6 +1,6 @@
 package com.marketplace.cartservice.model;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,7 +33,7 @@ public class Cart {
   private Long userId;
 
   @Column(name = "CREATION_DATE", nullable = false)
-  private Instant creationDate = Instant.now();
+  private LocalDateTime creationDate;
 
   @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<CartItem> items = new ArrayList<>();
