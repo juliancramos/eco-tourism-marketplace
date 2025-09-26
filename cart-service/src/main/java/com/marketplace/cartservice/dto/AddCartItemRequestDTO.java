@@ -1,6 +1,6 @@
 package com.marketplace.cartservice.dto;
 
-public record AddCartItemDTO (
+public record AddCartItemRequestDTO (
     Long serviceId, 
     Integer quantity
     ) {}
