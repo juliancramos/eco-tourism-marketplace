@@ -5,6 +5,6 @@ import java.util.List;
 
 public record CartDTO(
         Long id,
-        Long serviceId,
+        Long userId,
         LocalDateTime creationDate,
         List<CartItemDTO> items) {}

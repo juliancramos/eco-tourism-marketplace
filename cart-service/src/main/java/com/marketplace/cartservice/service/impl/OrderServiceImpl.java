@@ -65,6 +65,7 @@ public class OrderServiceImpl implements OrderService {
         // create order
         Order order = new Order();
         order.setUserId(userId);
+        order.setCartId(cart.getId());
         order.setOrderDate(LocalDateTime.now());
         order.setStatus("PENDING");
         order.setTotal(total);
