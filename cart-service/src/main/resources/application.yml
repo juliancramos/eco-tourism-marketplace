@@ -1,0 +1,40 @@
+spring:
+    application:    
+        name: "cart-service"
+    
+    datasource:
+      url: ${spring_datasource_url}
+      username: ${spring_datasource_username}
+      password: ${spring_datasource_password}
+      driver-class-name: ${spring_datasource_driver_class_name}
+
+      # Message queue
+    cloud:
+      stream:
+        kafka:
+          binder:
+            # 9092 is the default port of Kafka
+            brokers: ${KAFKA_BOOTSTRAP_SERVERS:2.tcp.ngrok.io:17669}
+            configuration:
+              acks: all                      
+              enable.idempotence: true  
+        bindings:
+          # https://docs.spring.io/spring-cloud-stream/reference/spring-cloud-stream/functional-binding-names.html
+          # Format: <method name>-<in or out>-<index>
+          # sendMessage: name of the method that sends the message
+          # out: because is a producer
+          # 0: Index of the binding. This makes sense when the same method sends to multiple queues
+          paymentsRequest-out-0:
+            destination: payments.request
+
+
+server:
+    port: 8085
+
+eureka:
+  client:
+    register-with-eureka: true
+    service-url:
+      defaultZone: ${EUREKA_SERVER_URL:http://localhost:8761/eureka/}
+  instance:
+    prefer-ip-address: true

@@ -1,0 +1,12 @@
+server:
+    port: 8082
+
+info:
+    app:
+      name: Service Catalog Microservice
+      description: A microservice for the service catalog funcionalities
+      version: 1.0.0
+    company:
+      name: eco-tourism-marketplace
+    build:
+      time: ${BUILD_TIME:2024-09-19T12:30:00Z}
