@@ -23,6 +23,7 @@ public class OrderMapper {
             order.getUserId(),
             order.getTotal(),
             order.getStatus(),
+            order.getPaymentMethod(),
             order.getOrderDate(),
             items
         );
@@ -38,6 +39,7 @@ public class OrderMapper {
         order.setUserId(dto.userId());
         order.setTotal(dto.total());
         order.setStatus(dto.status());
+        order.setPaymentMethod(dto.paymentMethod());
         order.setOrderDate(dto.orderDate());
 
         if (dto.items() != null) {
