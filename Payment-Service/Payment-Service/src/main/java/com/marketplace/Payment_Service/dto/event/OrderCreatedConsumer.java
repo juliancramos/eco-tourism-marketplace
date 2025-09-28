@@ -15,17 +15,15 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class OrderCreatedConsumer {
     private final PaymentService paymentService;
-    private final ObjectMapper objectMapper;
 
     @KafkaListener(topics = "payments.request", groupId = "payment-service-group")
-    public void consumer(String message) {
-        try{
-            log.info("Received message from payments.request topic: {}", message);
-            OrderDTO orderDTO = objectMapper.readValue(message, OrderDTO.class);
+    public void consumer(OrderDTO orderDTO) {
+        try {
+            log.info("Received message for order ID: {}", orderDTO.id());
             paymentService.createPayment(orderDTO);
-            log.info("Processed payment for order ID: {}", orderDTO.orderId());
+            log.info("Processed payment for order ID: {}", orderDTO.id());
         } catch (Exception e) {
-            log.error("Error processing message: {}", e.getMessage());
+            log.error("Error processing message: {}", e.getMessage(), e);
         }
     }       
 }

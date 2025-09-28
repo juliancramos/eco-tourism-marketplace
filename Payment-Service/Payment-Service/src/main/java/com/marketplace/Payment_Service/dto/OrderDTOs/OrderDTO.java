@@ -3,7 +3,7 @@ package com.marketplace.Payment_Service.dto.OrderDTOs;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public record OrderDTO(Long orderId,
+public record OrderDTO(
     Long id,
     Long cartId,
     Long userId,

@@ -43,7 +43,7 @@ public class PaymentMapper {
     }
 
     public static void applyCreate(Payment e, OrderDTO order, LocalDateTime now) {
-        e.setOrderId(order.orderId());
+        e.setOrderId(order.id());
         e.setCartId(order.cartId());
         e.setUserId(order.userId());
         e.setTotal(order.total());
