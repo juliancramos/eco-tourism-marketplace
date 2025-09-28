@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.marketplace.cartservice.dto.OrderDTO;
-import com.marketplace.cartservice.service.MQCheckoutService;
+import com.marketplace.cartservice.queue.MQCheckoutService;
 import com.marketplace.cartservice.service.OrderService;
 
 import lombok.AllArgsConstructor;
@@ -30,7 +30,7 @@ public class OrderController {
     @PostMapping("/{userId}/checkout")
     public ResponseEntity<OrderDTO> checkout(@PathVariable Long userId) {
         OrderDTO dto = this.orderService.checkout(userId);
-        this.mqCheckoutService.sendMessage(dto);
+        this.mqCheckoutService.paymentsRequest(dto);
         return ResponseEntity.status(201).body(dto);
     }
 
