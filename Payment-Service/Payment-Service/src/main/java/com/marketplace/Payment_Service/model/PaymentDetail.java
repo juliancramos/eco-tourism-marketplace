@@ -19,31 +19,25 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @Entity
 @Table(name = "PAYMENT_DETAIL")
-@Builder
 public class PaymentDetail {
     @Id
-    @Column(name = "ID", precision = 19, scale = 0, nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long id;   // coincide con "id" de cada item recibido
 
-    @Column(name = "SERVICE_ID", precision = 19, scale = 0, nullable = false)
+    @Column(name = "SERVICE_ID", nullable = false)
     private Long serviceId;
 
-    @Column(name = "SERVICE_NAME", length = 100, nullable = false)
-    private String serviceName;
-
-    @Column(name = "QUANTITY", precision = 10, scale = 0, nullable = false)
+    @Column(name = "QUANTITY", nullable = false)
     private Integer quantity;
 
-    @Column(name = "UNIT_PRICE", precision = 12, scale = 0, nullable = false)
-    private Double unitPrice;
-
-    @Column(name = "SUBTOTAL", precision = 12, scale = 0, nullable = false)
-    private Double subtotal;
+    @Column(name = "PRICE", nullable = false)
+    private Double price;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "PAYMENT_ID", nullable = false)
     private Payment payment;
 }
+

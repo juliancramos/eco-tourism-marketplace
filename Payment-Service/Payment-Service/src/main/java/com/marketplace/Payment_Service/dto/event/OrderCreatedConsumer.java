@@ -22,7 +22,7 @@ public class OrderCreatedConsumer {
         try{
             log.info("Received message from payments.request topic: {}", message);
             OrderDTO orderDTO = objectMapper.readValue(message, OrderDTO.class);
-            paymentService.processPayment(orderDTO);
+            paymentService.createPayment(orderDTO);
             log.info("Processed payment for order ID: {}", orderDTO.orderId());
         } catch (Exception e) {
             log.error("Error processing message: {}", e.getMessage());

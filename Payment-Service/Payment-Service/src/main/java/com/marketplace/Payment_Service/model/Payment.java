@@ -23,50 +23,44 @@ import lombok.AllArgsConstructor;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @Entity
 @Table(name = "PAYMENT")
-@Builder
-public class Payment { 
+public class Payment {
     @Id
-    @Column(name = "ID", precision = 19, scale = 0, nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long id;   // coincide con "id" de la orden recibida
 
-    @Column(name = "ORDER_ID", precision = 19, scale = 0, nullable = false)
-    private Long OrderId;
+    @Column(name = "ORDER_ID", nullable = false)
+    private Long orderId;
 
-    @Column(name = "USER_ID", precision = 19, scale = 0, nullable = false)
+    @Column(name = "CART_ID", nullable = false)
+    private Long cartId;
+
+    @Column(name = "USER_ID", nullable = false)
     private Long userId;
 
-    @Column(name = "AMOUNT", precision = 12, scale = 0, nullable = false)
-    private Double amount;
+    @Column(name = "TOTAL", nullable = false)
+    private Double total;
 
-    @Column(name = "CURRENCY", length = 3, nullable = false)
-    private String currency;
-
-    @Column(name = "STATUS", length = 20, nullable = false)
+    @Column(name = "STATUS", nullable = false, length = 20)
     @Enumerated(EnumType.STRING)
-    private PaymentStatus status;
+    private PaymentStatus status;  // PENDING, PAID, FAILED
 
+    @Column(name = "ORDER_DATE", nullable = false)
+    private LocalDateTime orderDate;
+
+    // 🔹 Datos propios del pago
     @Column(name = "METHOD", length = 20, nullable = false)
     @Enumerated(EnumType.STRING)
     private PaymentMethod method;
 
-    @Column(name = "TRANSACTION_ID", length = 100, nullable = false)
+    @Column(name = "TRANSACTION_ID", length = 100)
     private String transactionId;
 
-    @Column(name = "CALLBACKTOPIC", length = 100, nullable = false)
-    private String callbackTopic;
+    @OneToMany(mappedBy = "payment", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PaymentDetail> items;
 
-    @Column(name = "CREATION_DATE", nullable = false)
-    private LocalDateTime creationDate;
-
-    @Column(name = "TIEMESTAMP", nullable = false)
-    private LocalDateTime timestamp;
-
-    @OneToMany(mappedBy = "PAYMENT_DETAIL", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<PaymentDetail> paymentDetails;
-
-    @OneToOne(mappedBy = "RECEIPT", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(mappedBy = "payment", cascade = CascadeType.ALL, orphanRemoval = true)
     private Receipt receipt;
 }

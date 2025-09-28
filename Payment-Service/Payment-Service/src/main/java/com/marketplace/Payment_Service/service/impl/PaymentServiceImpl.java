@@ -7,13 +7,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.marketplace.Payment_Service.dto.PaymentDTO;
 import com.marketplace.Payment_Service.dto.OrderDTOs.OrderDTO;
-import com.marketplace.Payment_Service.dto.PaymentDTOs.CreatePaymentDTO;
-import com.marketplace.Payment_Service.dto.PaymentDTOs.PaymentDTO;
-import com.marketplace.Payment_Service.dto.PaymentDTOs.UpdatePaymentDTO;
 import com.marketplace.Payment_Service.mapper.PaymentMapper;
 import com.marketplace.Payment_Service.model.Payment;
 import com.marketplace.Payment_Service.model.PaymentStatus;
+import com.marketplace.Payment_Service.model.Receipt;
 import com.marketplace.Payment_Service.repository.PaymentRepository;
 import com.marketplace.Payment_Service.service.PaymentService;
 
@@ -28,7 +27,7 @@ public class PaymentServiceImpl implements PaymentService {
     @Override
     public PaymentDTO getPayment(Long id) {
         Payment payment = paymentRepository.findById(id).orElseThrow();
-        Hibernate.initialize(payment.getPaymentDetails());
+        Hibernate.initialize(payment.getItems());
         Hibernate.initialize(payment.getReceipt());
         return PaymentMapper.toDto(payment);
     }
@@ -47,19 +46,49 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public PaymentDTO createPayment(CreatePaymentDTO dto, OrderDTO order) {
+    public PaymentDTO createPayment(OrderDTO order) {
         Payment payment = new Payment();
-        PaymentMapper.applyCreate(payment, dto, order,LocalDateTime.now());
+        PaymentMapper.applyCreate(payment, order,LocalDateTime.now());
         payment = paymentRepository.save(payment);
         return PaymentMapper.toDto(payment);
     }
 
     @Override
-    public PaymentDTO updatePayment(UpdatePaymentDTO dto) {
-        Payment payment = paymentRepository.findById(dto.id()).orElseThrow();
-        PaymentMapper.applyUpdate(payment, dto);
-        payment = paymentRepository.save(payment);
-        return PaymentMapper.toDto(payment);
+    public PaymentDTO simulatePayment(Long id, String cardNumber) {
+        Payment payment = paymentRepository.findById(id).orElseThrow();
+        String method = payment.getMethod().name();
+        if(method.equals("PSE")){
+            payment.setStatus(PaymentStatus.COMPLETED);
+            createReceipt(payment);
+        }
+        if(method.equals("CREDIT_CARD") || method.equals("DEBIT_CARD")){
+            if(cardNumber.length() != 16 || cardNumber == null){
+                payment.setStatus(PaymentStatus.FAILED);
+            }
+            else{
+                payment.setStatus(PaymentStatus.COMPLETED);
+                createReceipt(payment);
+            }   
+        }
+        return PaymentMapper.toDto(paymentRepository.save(payment));
+    }
+
+
+    public static void createReceipt(Payment e) {
+        if (e == null) return;
+
+        Receipt receipt = new Receipt();
+        receipt.setPayment(e); // asociamos el pago
+        receipt.setReceiptNumber(generateReceiptNumber()); // generamos número único
+        receipt.setGeneratedAt(LocalDateTime.now());
+        receipt.setTotal(e.getTotal() != null ? e.getTotal() : 0.0);
+
+        e.setReceipt(receipt);
+    }
+
+    private static String generateReceiptNumber() {
+        return "RCPT-" + LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("yyyyMMddHHmmss"))
+                + "-" + java.util.UUID.randomUUID().toString().substring(0, 8).toUpperCase();
     }
 
     @Override
@@ -67,16 +96,4 @@ public class PaymentServiceImpl implements PaymentService {
         Payment payment = paymentRepository.findById(id).orElseThrow();
         paymentRepository.delete(payment);
     }
-
-    @Override
-    public void processPayment(OrderDTO order){
-        Payment payment = new Payment();
-        payment.setOrderId(order.orderId());
-        payment.setUserId(order.userId());
-        payment.setAmount(order.total());
-        payment.setCurrency(null);
-        payment.setStatus(PaymentStatus.valueOf(order.status()));
-
-    }
- 
 }

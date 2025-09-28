@@ -9,6 +9,7 @@ public record OrderDTO(Long orderId,
     Long userId,
     Double total,
     String status,
+    String paymentMethod,
     LocalDateTime orderDate,
     List<OrderItemDTO> items
 ) {
