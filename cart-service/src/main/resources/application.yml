@@ -14,7 +14,10 @@ spring:
         kafka:
           binder:
             # 9092 is the default port of Kafka
-            brokers: localhost:9092
+            brokers: ${KAFKA_BOOTSTRAP_SERVERS:2.tcp.ngrok.io:17669}
+            configuration:
+              acks: all                      
+              enable.idempotence: true  
         bindings:
           # https://docs.spring.io/spring-cloud-stream/reference/spring-cloud-stream/functional-binding-names.html
           # Format: <method name>-<in or out>-<index>

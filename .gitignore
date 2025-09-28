@@ -46,5 +46,5 @@ Thumbs.db
 /kafka_2.13-3.9.1/data/
 /kafka_2.13-3.9.1/datakraft-logs/
 /data/
-/logs/
+/kafka_2.13-3.9.1/logs
 /*.log
