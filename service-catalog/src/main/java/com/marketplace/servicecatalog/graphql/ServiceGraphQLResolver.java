@@ -11,7 +11,7 @@ import jakarta.transaction.Transactional;
 import java.util.List;
 
 
-import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Page;    
 import org.springframework.data.domain.Pageable;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.QueryMapping;

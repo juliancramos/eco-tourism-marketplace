@@ -41,6 +41,9 @@ public class Order {
   @Column(name = "STATUS", nullable = false, length = 50)
   private String status;
 
+  @Column(name = "PAYMENT_METHOD")
+  private String paymentMethod;
+
   @Column(name = "ORDER_DATE", nullable = false, columnDefinition = "TIMESTAMP(6)")
   private LocalDateTime orderDate;
 
