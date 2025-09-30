@@ -8,12 +8,16 @@ import com.marketplace.userprofileservice.model.Client;
 import com.marketplace.userprofileservice.model.Provider;
 import com.marketplace.userprofileservice.model.Role;
 import com.marketplace.userprofileservice.model.User;
+import com.marketplace.userprofileservice.queue.ProviderCreatedEvent;
+import com.marketplace.userprofileservice.queue.ProviderEventPublisher;
 import com.marketplace.userprofileservice.repository.RoleRepository;
 import com.marketplace.userprofileservice.repository.UserRepository;
 import com.marketplace.userprofileservice.service.KeycloakService;
 import com.marketplace.userprofileservice.service.UserService;
 
+import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -31,6 +35,8 @@ public class UserServiceImpl implements UserService {
     private final RoleRepository roleRepository;
     private final UserMapper userMapper;
     private final KeycloakService keycloakService;
+    private final ProviderEventPublisher providerEventPublisher;
+
 
     @Override
     @Transactional
@@ -51,7 +57,6 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public UserDTO createProvider(CreateProviderRequestDTO request) {
         User user = createUserWithRole(request, "ROLE_PROVIDER");
-
         Provider provider = Provider.builder()
                 .user(user)
                 .tradeName(request.getTradeName()) 
@@ -63,6 +68,11 @@ public class UserServiceImpl implements UserService {
 
         user.setProvider(provider);
         userRepository.save(user);
+
+        // publish event every time a provider is created
+        providerEventPublisher.publishProviderCreated(
+            new ProviderCreatedEvent(user.getProvider().getId(), provider.getTradeName(), "ACTIVE")
+        );
 
         return userMapper.toDTO(user);
     }
@@ -84,11 +94,11 @@ public class UserServiceImpl implements UserService {
         roles.add(role);
         user.setRoles(roles);
 
-
         try {
             String keycloakUserId = keycloakService.createKeycloakUser(request, roleName);
             user.setKeycloakUserId(keycloakUserId); 
         } catch (Exception e) {
+            //e.printStackTrace(); complete message
             throw new RuntimeException("Failed to create user in Keycloak: " + e.getMessage(), e);
         }
 
