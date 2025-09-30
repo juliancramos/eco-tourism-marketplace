@@ -1,0 +1,28 @@
+spring:
+  application:
+    name: config-server
+
+  cloud:
+    config:
+      server:
+        # Repository from which the config files will be downloaded
+        # Do not use this uri in production!
+        # Instead, create a repo in a server and point to it using https
+        # Remove this if using GIT to store config files
+        native:
+          search-locations:
+            # The config files are stored in `src/main/resources/config`
+            - classpath:/config
+
+        # To use a git repo, uncomment and change below
+        # git:
+        #   uri: https://github.com/my/repo/path.git
+        #   default-label: main # The branch from which to download the config files
+        # See https://docs.spring.io/spring-cloud-config/reference/server/environment-repository/git-backend.html
+
+  # Remove this if using GIT to store config files
+  profiles:
+    active: native
+
+server:
+  port: 8888

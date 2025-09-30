@@ -1,0 +1,43 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: gateway-server
+
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          # Indicates the URL of the Keycloak endpoint that 
+          # provides the keys to verify JWT tokens        
+          # This is used within the subnet where the 
+          # microservices are deployed
+          # This URL does not need to be accessible from outside        
+          jwk-set-uri: https://e73d150e7cc3.ngrok-free.app/realms/marketplace-realm/protocol/openid-connect/certs
+
+eureka:
+  client:
+    register-with-eureka: true
+    service-url:
+      defaultZone: ${EUREKA_SERVER_URL:http://localhost:8761/eureka/}
+  instance:
+    prefer-ip-address: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+  endpoint:
+    health:
+      show-details: always
+    gateway:
+      access: read-only

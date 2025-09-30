@@ -1,0 +1,4 @@
+spring:
+  application:
+    name: service-review-questions
+spring.config.import: "configserver:http://localhost:8888"
