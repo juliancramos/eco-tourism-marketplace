@@ -16,7 +16,6 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ProviderCacheEntity {
-
     @Id
     @Column(name = "ID", nullable = false)
     private Long id;
@@ -26,5 +25,4 @@ public class ProviderCacheEntity {
 
     @Column(name = "STATUS")
     private String status; 
-
 }
