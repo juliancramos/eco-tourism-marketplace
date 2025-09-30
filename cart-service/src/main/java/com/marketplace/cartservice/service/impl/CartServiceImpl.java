@@ -63,11 +63,14 @@ public class CartServiceImpl implements CartService {
     @Override
     @Transactional
     public CartDTO createCart(Long userId) {
-        Cart cart = new Cart();
-        cart.setUserId(userId);
-        cart.setCreationDate(LocalDateTime.now());
-        Cart saved = cartRepository.save(cart);
-        return CartMapper.toDto(saved);
+        return cartRepository.findByUserId(userId)
+        .map(CartMapper::toDto)
+        .orElseGet(() -> {
+            Cart c = new Cart();
+            c.setUserId(userId);
+            c.setCreationDate(LocalDateTime.now());
+            return CartMapper.toDto(cartRepository.save(c));
+        });
     }
 
     @Override
