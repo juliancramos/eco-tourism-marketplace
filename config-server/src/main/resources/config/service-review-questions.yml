@@ -1,0 +1,12 @@
+server:
+    port: 8083
+
+info:
+    app:
+      name: Service Review Questions Microservice
+      description: A microservice for the service Review and Q&A funcionalities
+      version: 1.0.0
+    company:
+      name: eco-tourism-marketplace
+    build:
+      time: ${BUILD_TIME:2024-09-19T12:30:00Z}
