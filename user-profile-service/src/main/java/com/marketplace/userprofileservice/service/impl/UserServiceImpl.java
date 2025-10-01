@@ -16,19 +16,14 @@ import com.marketplace.userprofileservice.repository.RoleRepository;
 import com.marketplace.userprofileservice.repository.UserRepository;
 import com.marketplace.userprofileservice.service.KeycloakService;
 import com.marketplace.userprofileservice.service.UserService;
-
-import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
