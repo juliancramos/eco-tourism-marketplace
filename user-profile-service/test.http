@@ -1,0 +1,87 @@
+# Variables globales
+@host = http://localhost:8080/users-profile-service
+@keycloak_host = https://e73d150e7cc3.ngrok-free.app
+@user = proveedor-prueba@example.com
+@pass = 123
+@client_id = gateway-client
+
+### 1. Obtener token de Keycloak
+# @name login
+POST {{keycloak_host}}/realms/marketplace-realm/protocol/openid-connect/token
+Content-Type: application/x-www-form-urlencoded
+
+grant_type=password&client_id={{client_id}}&username={{user}}&password={{pass}}
+
+### Asignar variable auth_token automáticamente
+@auth_token = {{login.response.body.$.access_token}}
+
+
+### 2. Crear cliente
+POST {{host}}/users/client
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+{
+  "email": "cliente1@test.com",
+  "password": "12345678",
+  "name": "Cliente Uno",
+  "imgUrl": "",
+  "roles": ["CLIENT"]
+}
+
+
+### 3. Crear proveedor
+POST {{host}}/users/provider
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+{
+  "email": "proveedor1@test.com",
+  "password": "12345678",
+  "name": "Proveedor Uno",
+  "imgUrl": "",
+  "roles": ["PROVIDER"],
+  "tradeName": "Comercio Uno",
+  "description": "Proveedor de servicios",
+  "phoneNumber": "1234567890",
+  "webpage": "http://proveedor1.com"
+}
+
+
+### 4. Obtener usuario por ID
+GET {{host}}/users/64
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+
+### 5. Obtener usuario por nombre
+GET {{host}}/users/name/Cliente%20Uno
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+
+### 6. Listar todos los usuarios
+GET {{host}}/users
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+
+### 7. Actualizar usuario
+PUT {{host}}/users/update/1
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+{
+  "id": 1,
+  "email": "cliente1@test.com",
+  "name": "Cliente Uno Actualizado",
+  "imgUrl": "",
+  "active": true,
+  "roles": ["CLIENT"]
+}
+
+
+### 8. Eliminar usuario
+DELETE {{host}}/users/delete/1
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
