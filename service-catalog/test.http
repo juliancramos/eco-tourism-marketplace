@@ -1,0 +1,79 @@
+# Variables globales
+@host = http://localhost:8080/service-catalog
+@keycloak_host = https://e73d150e7cc3.ngrok-free.app
+@user = proveedor-prueba@example.com
+@pass = 123
+@client_id = gateway-client
+
+### 1. Obtener token de Keycloak
+# @name login
+POST {{keycloak_host}}/realms/marketplace-realm/protocol/openid-connect/token
+Content-Type: application/x-www-form-urlencoded
+
+grant_type=password&client_id={{client_id}}&username={{user}}&password={{pass}}
+
+### Asignar variable auth_token automáticamente
+@auth_token = {{login.response.body.$.access_token}}
+
+
+### 2. Crear categoría de servicio
+POST {{host}}/categories
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+{
+  "name": "Limpieza"
+}
+
+
+### 3. Listar categorías de servicio
+GET {{host}}/categories
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+
+### 4. Obtener categoría por ID
+GET {{host}}/categories/1
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+
+### 5. Crear servicio
+POST {{host}}/services
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+{
+  "providerId": 22,
+  "categoryId": 21,
+  "title": "Limpieza de Casa",
+  "description": "Servicio de limpieza a domicilio",
+  "price": 50.0,
+  "currency": "USD",
+  "active": true,
+  "countryCode": "COL",
+  "cityCode": "BOG",
+  "address": "Calle 123 #45-67",
+  "images": [
+    {"url": "http://example.com/image1.jpg", "position": 1},
+    {"url": "http://example.com/image2.jpg", "position": 2}
+  ]
+}
+
+
+### 6. Listar servicios
+GET {{host}}/services
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+
+### 7. Obtener servicio por ID
+GET {{host}}/services/3
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+
+### 8. Actualizar servicio
+PUT {{host}}/services/1
+Authorization: Bearer {{auth_token}}
+Content-Type: appli

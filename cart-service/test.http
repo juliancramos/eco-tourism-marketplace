@@ -1,0 +1,87 @@
+# Variables globales
+@host = http://localhost:8080/cart-service
+@keycloak_host = https://e73d150e7cc3.ngrok-free.app
+@user = proveedor-prueba@example.com
+@pass = 123
+@client_id = gateway-client
+
+### 1. Obtener token de Keycloak
+# @name login
+POST {{keycloak_host}}/realms/marketplace-realm/protocol/openid-connect/token
+Content-Type: application/x-www-form-urlencoded
+
+grant_type=password&client_id={{client_id}}&username={{user}}&password={{pass}}
+
+### Asignar variable auth_token automáticamente
+@auth_token = {{login.response.body.$.access_token}}
+
+
+### 2. Crear carrito para usuario 1
+POST {{host}}/cart/user/70
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+
+### 3. Obtener carrito por ID
+GET {{host}}/cart/62
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+
+### 4. Obtener carrito actual del usuario
+GET {{host}}/cart/user/1/current
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+
+### 5. Agregar ítem al carrito
+POST {{host}}/cart/62/items
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+{
+  "serviceId": 5,
+  "quantity": 2
+}
+
+
+### 6. Eliminar ítem del carrito
+DELETE {{host}}/cart/1/items/1
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+
+### 7. Limpiar carrito
+POST {{host}}/cart/1/clear
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+
+### 8. Checkout del carrito del usuario
+POST {{host}}/orders/1/checkout
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+{
+  "paymentMethod": "CREDIT_CARD"
+}
+
+
+### 9. Obtener orden por ID
+GET {{host}}/orders/1
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+
+### 10. Actualizar estado de la orden
+PUT {{host}}/orders/1/status
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+"COMPLETED"
+
+
+### 11. Obtener todas las órdenes de un usuario
+GET {{host}}/orders/user/1
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
