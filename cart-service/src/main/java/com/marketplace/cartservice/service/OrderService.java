@@ -6,6 +6,6 @@ public interface OrderService {
 
     String updateOrderStatus(Long orderId, String status);
     OrderDTO getOrder(Long orderId);
-    OrderDTO checkout(Long userId);
+    OrderDTO checkout(Long userId, String paymentMethod);
 
 }

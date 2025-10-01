@@ -20,4 +20,14 @@ public interface  ServiceCatalogService {
     ServiceDTO create(CreateServiceDTO dto);
     ServiceDTO update(UpdateServiceDTO dto);
     void delete(Long id);
+
+    Page<ServiceDTO> listServicesByProvider(Long providerId, Pageable pageable);
+
+    Page<ServiceDTO> listServicesByCountry(String countryCode, Pageable pageable);
+
+    Page<ServiceDTO> searchServicesByTitle(String keyword, Pageable pageable);
+
+    Page<ServiceDTO> findByPriceRange(Double minPrice, Double maxPrice, Pageable pageable);
+
+    Page<ServiceDTO> findActiveServices(Pageable pageable);
 }

@@ -1,5 +1,15 @@
 server:
     port: 8082
+    
+spring:
+  graphql:
+    path: /graphql
+    graphiql:
+      enabled: true
+      path: /graphiql
+    playground:
+      enabled: true
+      path: /playground
 
 info:
     app:

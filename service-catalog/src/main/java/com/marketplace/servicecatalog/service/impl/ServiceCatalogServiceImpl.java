@@ -116,4 +116,39 @@ public class ServiceCatalogServiceImpl implements ServiceCatalogService {
     public void delete(Long id) {
         serviceRepository.deleteById(id);
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<ServiceDTO> listServicesByProvider(Long providerId, Pageable pageable) {
+        return serviceRepository.findByProviderId(providerId, pageable)
+                .map(ServiceMapper::toDto);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<ServiceDTO> listServicesByCountry(String countryCode, Pageable pageable) {
+        return serviceRepository.findByCountryCode(countryCode, pageable)
+                .map(ServiceMapper::toDto);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<ServiceDTO> searchServicesByTitle(String keyword, Pageable pageable) {
+        return serviceRepository.findByTitleContainingIgnoreCase(keyword, pageable)
+                .map(ServiceMapper::toDto);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<ServiceDTO> findByPriceRange(Double minPrice, Double maxPrice, Pageable pageable) {
+        return serviceRepository.findByPriceBetween(minPrice, maxPrice, pageable)
+                .map(ServiceMapper::toDto);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<ServiceDTO> findActiveServices(Pageable pageable) {
+        return serviceRepository.findByActive(true, pageable)
+                .map(ServiceMapper::toDto);
+    }
 }
