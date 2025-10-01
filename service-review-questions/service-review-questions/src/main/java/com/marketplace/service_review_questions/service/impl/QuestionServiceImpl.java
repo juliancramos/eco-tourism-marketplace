@@ -17,10 +17,12 @@ import com.marketplace.service_review_questions.mapper.AnswerMapper;
 import com.marketplace.service_review_questions.mapper.QuestionMapper;
 import com.marketplace.service_review_questions.model.Answer;
 import com.marketplace.service_review_questions.model.Question;
-import com.marketplace.service_review_questions.repository.AnswerRepository;
 import com.marketplace.service_review_questions.repository.QuestionRepository;
+import com.marketplace.service_review_questions.repository.ServiceCacheRepository;
+import com.marketplace.service_review_questions.repository.UserCacheRepository;
 import com.marketplace.service_review_questions.service.QuestionService;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 
@@ -29,7 +31,8 @@ import lombok.AllArgsConstructor;
 public class QuestionServiceImpl implements QuestionService {
 
     private final QuestionRepository questionRepository;
-    private final AnswerRepository answerRepository;
+    private final UserCacheRepository userCacheRepository;
+    private final ServiceCacheRepository serviceCacheRepository;
 
     @Override
     @Transactional
@@ -53,6 +56,15 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     public QuestionDTO create(CreateQuestionDTO dto) {
+        System.out.println("Antes de verificar usuario en pregutna");
+        if (!userCacheRepository.existsById(dto.userId())) {
+            throw new EntityNotFoundException("User not found with id: " + dto.userId());
+        }
+        System.out.println("Antes de verificar servicio en pregutna");
+        if (!serviceCacheRepository.existsById(dto.serviceId())) {
+            throw new EntityNotFoundException("Service not found with id: " + dto.serviceId());
+        }
+        System.out.println("Despues de verificar en pregutna");
         Question question = new Question();
         QuestionMapper.applyCreate(question, dto, LocalDateTime.now());
         question = questionRepository.save(question);
