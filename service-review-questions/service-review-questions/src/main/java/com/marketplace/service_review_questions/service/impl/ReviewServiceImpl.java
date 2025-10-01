@@ -10,8 +10,11 @@ import com.marketplace.service_review_questions.dto.ReviewDTOs.UpdateReviewDTO;
 import com.marketplace.service_review_questions.mapper.ReviewMapper;
 import com.marketplace.service_review_questions.model.Review;
 import com.marketplace.service_review_questions.repository.ReviewRepository;
+import com.marketplace.service_review_questions.repository.ServiceCacheRepository;
+import com.marketplace.service_review_questions.repository.UserCacheRepository;
 import com.marketplace.service_review_questions.service.ReviewService;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 
 
@@ -20,6 +23,8 @@ import lombok.AllArgsConstructor;
 public class ReviewServiceImpl implements ReviewService {
     
     private final ReviewRepository reviewRepository;
+    private final UserCacheRepository userCacheRepository;
+    private final ServiceCacheRepository serviceCacheRepository;
     
     @Override
     public ReviewDTO getReview(Long id) {
@@ -49,6 +54,17 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public ReviewDTO createReview(CreateReviewDTO dto) {
+        System.out.println("Antes de verificar usuario en review");
+        if (!userCacheRepository.existsById(dto.userId())) {
+            throw new EntityNotFoundException("User not found with id: " + dto.userId());
+        }
+        System.out.println("Antes de verificar servicio en review");
+        
+        if (!serviceCacheRepository.existsById(dto.serviceId())) {
+            throw new EntityNotFoundException("Service not found with id: " + dto.serviceId());
+        }
+        System.out.println("despues de verificar en review");
+
         Review c = new Review();
         ReviewMapper.applyCreate(c, dto, java.time.LocalDateTime.now());
         reviewRepository.save(c);

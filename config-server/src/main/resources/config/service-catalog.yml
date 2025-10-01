@@ -20,3 +20,24 @@ info:
       name: eco-tourism-marketplace
     build:
       time: ${BUILD_TIME:2024-09-19T12:30:00Z}
+
+
+spring:
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:2.tcp.ngrok.io:17669}
+    consumer:
+      group-id: service-catalog
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+  
+  cloud:
+    stream:
+      bindings:
+        serviceCreated-out-0:   
+          destination: service.created
+          content-type: application/json
+      kafka:
+        binder:
+          brokers: ${KAFKA_BOOTSTRAP_SERVERS:2.tcp.ngrok.io:17669}
+      defaultBinder: kafka
