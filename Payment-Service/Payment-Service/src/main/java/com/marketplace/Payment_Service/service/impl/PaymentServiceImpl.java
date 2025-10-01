@@ -16,6 +16,7 @@ import com.marketplace.Payment_Service.model.Receipt;
 import com.marketplace.Payment_Service.repository.PaymentRepository;
 import com.marketplace.Payment_Service.service.PaymentService;
 
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 
 @Service
@@ -25,6 +26,7 @@ public class PaymentServiceImpl implements PaymentService {
     private final PaymentRepository paymentRepository;
 
     @Override
+    @Transactional
     public PaymentDTO getPayment(Long id) {
         Payment payment = paymentRepository.findById(id).orElseThrow();
         Hibernate.initialize(payment.getItems());
@@ -33,6 +35,7 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
+    @Transactional
     public Page<PaymentDTO> listPayments(Long userid, Pageable pageable) {
         Page<Payment> page;
 
@@ -54,6 +57,7 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
+    @Transactional
     public PaymentDTO simulatePayment(Long id, String cardNumber) {
         Payment payment = paymentRepository.findById(id).orElseThrow();
         String method = payment.getMethod().name();

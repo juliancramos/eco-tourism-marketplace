@@ -22,9 +22,7 @@ public class MQCheckoutService {
 
     public void paymentsRequest(OrderDTO dto) {
         Message<OrderDTO> msg = MessageBuilder.withPayload(dto).build();
-        streamBridge.send(this.queueName, msg);
-
-        boolean ok = streamBridge.send(queueName, msg);
+        boolean ok = streamBridge.send(this.queueName, msg);
         if (!ok) {
             throw new IllegalStateException("No se pudo publicar en binding " + queueName);
         }

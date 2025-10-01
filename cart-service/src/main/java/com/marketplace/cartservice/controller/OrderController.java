@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.marketplace.cartservice.dto.CheckoutRequestDTO;
 import com.marketplace.cartservice.dto.OrderDTO;
 import com.marketplace.cartservice.queue.MQCheckoutService;
 import com.marketplace.cartservice.service.OrderService;
@@ -28,8 +29,8 @@ public class OrderController {
     private final MQCheckoutService mqCheckoutService;
 
     @PostMapping("/{userId}/checkout")
-    public ResponseEntity<OrderDTO> checkout(@PathVariable Long userId) {
-        OrderDTO dto = this.orderService.checkout(userId);
+    public ResponseEntity<OrderDTO> checkout(@PathVariable Long userId, @RequestBody CheckoutRequestDTO req) {
+        OrderDTO dto = this.orderService.checkout(userId, req.paymentMethod());
         this.mqCheckoutService.paymentsRequest(dto);
         return ResponseEntity.status(201).body(dto);
     }

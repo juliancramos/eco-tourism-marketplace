@@ -49,7 +49,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public OrderDTO checkout(Long userId) {
+    public OrderDTO checkout(Long userId, String paymentMethod) {
         // Get or create cart for user
         Cart cart = cartRepository.findByUserId(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("Cart not found for user: " + userId));
@@ -69,6 +69,8 @@ public class OrderServiceImpl implements OrderService {
         order.setOrderDate(LocalDateTime.now());
         order.setStatus("PENDING");
         order.setTotal(total);
+        order.setPaymentMethod(paymentMethod);
+        
         Order savedOrder = orderRepository.save(order);
 
         // create order items
