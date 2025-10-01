@@ -10,6 +10,8 @@ import com.marketplace.userprofileservice.model.Role;
 import com.marketplace.userprofileservice.model.User;
 import com.marketplace.userprofileservice.queue.ProviderCreatedEvent;
 import com.marketplace.userprofileservice.queue.ProviderEventPublisher;
+import com.marketplace.userprofileservice.queue.UserCreatedEvent;
+import com.marketplace.userprofileservice.queue.UserEventPublisher;
 import com.marketplace.userprofileservice.repository.RoleRepository;
 import com.marketplace.userprofileservice.repository.UserRepository;
 import com.marketplace.userprofileservice.service.KeycloakService;
@@ -36,6 +38,7 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
     private final KeycloakService keycloakService;
     private final ProviderEventPublisher providerEventPublisher;
+    private final UserEventPublisher userEventPublisher;
 
 
     @Override
@@ -49,6 +52,11 @@ public class UserServiceImpl implements UserService {
 
         user.setClient(client);
         userRepository.save(user);
+
+        //publish new user
+        userEventPublisher.publishUserCreated(
+            new UserCreatedEvent(user.getId(), user.getName(),"ACTIVE")
+        );
 
         return userMapper.toDTO(user);
     }
@@ -72,6 +80,10 @@ public class UserServiceImpl implements UserService {
         // publish event every time a provider is created
         providerEventPublisher.publishProviderCreated(
             new ProviderCreatedEvent(user.getProvider().getId(), provider.getTradeName(), "ACTIVE")
+        );
+        //publish new user
+        userEventPublisher.publishUserCreated(
+            new UserCreatedEvent(user.getId(), user.getName(),"ACTIVE")
         );
 
         return userMapper.toDTO(user);
