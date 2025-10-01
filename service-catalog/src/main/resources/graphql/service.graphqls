@@ -25,9 +25,17 @@ type ServiceCategory {
 }
 
 type Query {
+    # Queries existentes
     allServices: [Service!]!
     serviceById(id: ID!): Service
     allCategories: [ServiceCategory!]!
     categoryById(id: ID!): ServiceCategory
     hello: String
+    servicesByCategory(categoryId: ID!): [Service!]!
+    servicesByProvider(providerId: ID!): [Service!]!
+    servicesByCity(cityCode: String!): [Service!]!
+    servicesByCountry(countryCode: String!): [Service!]!
+    searchServicesByTitle(keyword: String!): [Service!]!
+    servicesByPriceRange(minPrice: Float!, maxPrice: Float!): [Service!]!
+    activeServices: [Service!]!
 }
