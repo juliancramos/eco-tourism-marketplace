@@ -47,8 +47,50 @@ public class ServiceGraphQLResolver {
         return serviceCatalogService.getService(id);
     }
 
+    @QueryMapping
+    @Transactional
+    public List<ServiceDTO> servicesByCategory(@Argument Long categoryId) {
+        return serviceCatalogService.listServices(categoryId, null, null, Pageable.unpaged()).getContent();
+    }
 
     @QueryMapping
+    @Transactional
+    public List<ServiceDTO> servicesByProvider(@Argument Long providerId) {
+        return serviceCatalogService.listServicesByProvider(providerId, Pageable.unpaged()).getContent();
+    }
+
+    @QueryMapping
+    @Transactional
+    public List<ServiceDTO> servicesByCity(@Argument String cityCode) {
+        return serviceCatalogService.listServices(null, cityCode, null, Pageable.unpaged()).getContent();
+    }
+
+    @QueryMapping
+    @Transactional
+    public List<ServiceDTO> servicesByCountry(@Argument String countryCode) {
+        return serviceCatalogService.listServicesByCountry(countryCode, Pageable.unpaged()).getContent();
+    }
+
+    @QueryMapping
+    @Transactional
+    public List<ServiceDTO> searchServicesByTitle(@Argument String keyword) {
+        return serviceCatalogService.searchServicesByTitle(keyword, Pageable.unpaged()).getContent();
+    }
+
+    @QueryMapping
+    @Transactional
+    public List<ServiceDTO> servicesByPriceRange(@Argument Double minPrice, @Argument Double maxPrice) {
+        return serviceCatalogService.findByPriceRange(minPrice, maxPrice, Pageable.unpaged()).getContent();
+    }
+
+    @QueryMapping
+    @Transactional
+    public List<ServiceDTO> activeServices() {
+        return serviceCatalogService.findActiveServices(Pageable.unpaged()).getContent();
+    }
+
+    @QueryMapping
+    @Transactional
     public List<ServiceCategoryDTO> allCategories() {
         Page<ServiceCategoryDTO> page = serviceCatalogService.listCategories(Pageable.unpaged());
         return page.getContent();
@@ -60,4 +102,5 @@ public class ServiceGraphQLResolver {
         return serviceCatalogService.getCategory(id);
     }
 
+    
 }

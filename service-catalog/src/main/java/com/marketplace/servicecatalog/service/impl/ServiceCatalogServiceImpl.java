@@ -16,10 +16,14 @@ import com.marketplace.servicecatalog.dto.UpdateServiceDTO;
 import com.marketplace.servicecatalog.mapper.ServiceMapper;
 import com.marketplace.servicecatalog.model.ServiceCategory;
 import com.marketplace.servicecatalog.model.ServiceEntity;
+import com.marketplace.servicecatalog.queue.ServiceCreatedEvent;
+import com.marketplace.servicecatalog.queue.ServiceEventPublisher;
+import com.marketplace.servicecatalog.repository.ProviderCacheRepository;
 import com.marketplace.servicecatalog.repository.ServiceCategoryRepository;
 import com.marketplace.servicecatalog.repository.ServiceRepository;
 import com.marketplace.servicecatalog.service.ServiceCatalogService;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 
 @Service
@@ -28,6 +32,8 @@ public class ServiceCatalogServiceImpl implements ServiceCatalogService {
 
     private final ServiceRepository serviceRepository;
     private final ServiceCategoryRepository categoryRepository;
+    private final ProviderCacheRepository providerCacheRepository;
+    private final ServiceEventPublisher serviceEventPublisher;
 
     @Override
     @Transactional
@@ -80,10 +86,21 @@ public class ServiceCatalogServiceImpl implements ServiceCatalogService {
 
     @Override
     public ServiceDTO create(CreateServiceDTO dto) {
+
+        // check providerId
+        if (!providerCacheRepository.existsById(dto.providerId())) {
+            throw new EntityNotFoundException("Provider not found with id: " + dto.providerId());
+        }
+
         var e = new ServiceEntity();
-        Long newId = System.currentTimeMillis();
         ServiceMapper.applyCreate(e, dto, LocalDateTime.now());
         e = serviceRepository.save(e);
+
+        //publish niew service
+        serviceEventPublisher.publishServiceCreated(
+            new ServiceCreatedEvent(e.getId(), e.getTitle(), e.getActive() ? "ACTIVE" : "INACTIVE")
+        );
+
         return ServiceMapper.toDto(e);
     }
 
@@ -98,5 +115,40 @@ public class ServiceCatalogServiceImpl implements ServiceCatalogService {
     @Override
     public void delete(Long id) {
         serviceRepository.deleteById(id);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<ServiceDTO> listServicesByProvider(Long providerId, Pageable pageable) {
+        return serviceRepository.findByProviderId(providerId, pageable)
+                .map(ServiceMapper::toDto);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<ServiceDTO> listServicesByCountry(String countryCode, Pageable pageable) {
+        return serviceRepository.findByCountryCode(countryCode, pageable)
+                .map(ServiceMapper::toDto);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<ServiceDTO> searchServicesByTitle(String keyword, Pageable pageable) {
+        return serviceRepository.findByTitleContainingIgnoreCase(keyword, pageable)
+                .map(ServiceMapper::toDto);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<ServiceDTO> findByPriceRange(Double minPrice, Double maxPrice, Pageable pageable) {
+        return serviceRepository.findByPriceBetween(minPrice, maxPrice, pageable)
+                .map(ServiceMapper::toDto);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<ServiceDTO> findActiveServices(Pageable pageable) {
+        return serviceRepository.findByActive(true, pageable)
+                .map(ServiceMapper::toDto);
     }
 }

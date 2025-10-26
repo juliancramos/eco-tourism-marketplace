@@ -1,0 +1,162 @@
+# Variables globales
+@host = http://localhost:8080/service-catalog/graphql
+@keycloak_host = https://e73d150e7cc3.ngrok-free.app
+@user = proveedor-prueba@example.com
+@pass = 123
+@client_id = gateway-client
+
+### 1. Obtener token de Keycloak
+# @name login
+POST {{keycloak_host}}/realms/marketplace-realm/protocol/openid-connect/token
+Content-Type: application/x-www-form-urlencoded
+
+grant_type=password&client_id={{client_id}}&username={{user}}&password={{pass}}
+
+### Guardar token automáticamente
+@auth_token = {{login.response.body.$.access_token}}
+
+
+
+### 2. Hello GraphQL
+POST {{host}}
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+{
+  "query": "query { hello }"
+}
+
+
+### 3. Obtener todos los servicios
+POST {{host}}
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+{
+  "query": "query { allServices { id title price currency active providerId categoryId description countryCode cityCode address creationDate images { url position } } }"
+}
+
+
+### 4. Obtener servicio por ID
+POST {{host}}
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+{
+  "query": "query($id: ID!) { serviceById(id: $id) { id title price currency active providerId categoryId description countryCode cityCode address creationDate images { url position } } }",
+  "variables": {
+    "id": 1
+  }
+}
+
+
+### 5. Listar servicios por categoría
+POST {{host}}
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+{
+  "query": "query($categoryId: ID!) { servicesByCategory(categoryId: $categoryId) { id title price currency active providerId categoryId } }",
+  "variables": {
+    "categoryId": 1
+  }
+}
+
+
+### 6. Listar servicios por proveedor
+POST {{host}}
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+{
+  "query": "query($providerId: ID!) { servicesByProvider(providerId: $providerId) { id title price currency active providerId categoryId } }",
+  "variables": {
+    "providerId": 1
+  }
+}
+
+
+### 7. Listar servicios por ciudad
+POST {{host}}
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+{
+  "query": "query($cityCode: String!) { servicesByCity(cityCode: $cityCode) { id title price currency active providerId categoryId } }",
+  "variables": {
+    "cityCode": "BOG"
+  }
+}
+
+
+### 8. Listar servicios por país
+POST {{host}}
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+{
+  "query": "query($countryCode: String!) { servicesByCountry(countryCode: $countryCode) { id title price currency active providerId categoryId } }",
+  "variables": {
+    "countryCode": "COL"
+  }
+}
+
+
+### 9. Buscar servicios por título
+POST {{host}}
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+{
+  "query": "query($keyword: String!) { searchServicesByTitle(keyword: $keyword) { id title price currency active providerId categoryId } }",
+  "variables": {
+    "keyword": "Limpieza"
+  }
+}
+
+
+### 10. Servicios por rango de precio
+POST {{host}}
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+{
+  "query": "query($minPrice: Float!, $maxPrice: Float!) { servicesByPriceRange(minPrice: $minPrice, maxPrice: $maxPrice) { id title price currency active providerId categoryId } }",
+  "variables": {
+    "minPrice": 10.0,
+    "maxPrice": 100.0
+  }
+}
+
+
+### 11. Servicios activos
+POST {{host}}
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+{
+  "query": "query { activeServices { id title price currency active providerId categoryId } }"
+}
+
+
+### 12. Listar todas las categorías
+POST {{host}}
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+{
+  "query": "query { allCategories { id name } }"
+}
+
+
+### 13. Obtener categoría por ID
+POST {{host}}
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+{
+  "query": "query($id: ID!) { categoryById(id: $id) { id name } }",
+  "variables": {
+    "id": 1
+  }
+}

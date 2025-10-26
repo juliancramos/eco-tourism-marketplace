@@ -1,0 +1,125 @@
+# Variables globales
+@host = http://localhost:8080
+@keycloak_host = https://e73d150e7cc3.ngrok-free.app
+@user = proveedor-prueba@example.com
+@pass = 123
+@client_id = gateway-client
+
+### 1. Obtener token de Keycloak
+# @name login
+POST {{keycloak_host}}/realms/marketplace-realm/protocol/openid-connect/token
+Content-Type: application/x-www-form-urlencoded
+
+grant_type=password&client_id={{client_id}}&username={{user}}&password={{pass}}
+
+### Asignar variable auth_token automáticamente
+@auth_token = {{login.response.body.$.access_token}}
+
+
+### 2. GET Review por ID
+GET {{host}}/service-review-questions/reviews/2
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+
+### 3. Listar Reviews por serviceId
+GET {{host}}/service-review-questions/reviews?serviceId=5&page=0&size=20
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+
+### 4. Crear Review
+POST {{host}}/service-review-questions/reviews
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+{
+  "serviceId": 5,
+  "userId": 2,
+  "stars": 4,
+  "commentText": "Excelente servicio, muy recomendable"
+}
+
+
+### 5. Actualizar Review
+PUT {{host}}/service-review-questions/reviews/2
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+{
+  "serviceId": 5,
+  "userId": 2,
+  "stars": 5,
+  "commentText": "Actualización: servicio impecable"
+}
+
+
+### 6. Eliminar Review
+DELETE {{host}}/service-review-questions/reviews/2
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+
+### 7. GET Question por ID
+GET {{host}}/service-review-questions/questions/1
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+
+### 8. Listar Questions
+GET {{host}}/service-review-questions/questions?serviceId=5&page=0&size=20
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+
+### 9. Crear Question
+POST {{host}}/service-review-questions/questions
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+{
+  "serviceId": 5,
+  "userId": 2,
+  "text": "¿Cuál es el horario de atención?",
+  "answers": []
+}
+
+
+### 10. Actualizar Question
+PUT {{host}}/service-review-questions/questions/1
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+{
+  "id": 1,
+  "serviceId": 5,
+  "userId": 2,
+  "text": "Actualización: ¿Cuál es el horario de atención hoy?",
+  "answers": []
+}
+
+
+### 11. Eliminar Question
+DELETE {{host}}/service-review-questions/questions/1
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+
+### 12. Responder una Question
+POST {{host}}/service-review-questions/questions/1/answers
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+{
+  "text": "Nuestro horario es de 8:00 a 18:00"
+}
+
+
+### 13. Actualizar Answer de una Question
+PUT {{host}}/service-review-questions/questions/1/answers
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+{
+  "text": "Actualización: El horario es de 9:00 a 17:00"
+}

@@ -1,4 +1,5 @@
 spring:
   application:
     name: service-catalog
-spring.config.import: "configserver:http://localhost:8888"
+  config:
+    import: "configserver:http://localhost:8888"

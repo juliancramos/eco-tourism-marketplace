@@ -10,7 +10,7 @@ import com.marketplace.Payment_Service.service.PaymentService;
 import lombok.AllArgsConstructor;
 
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,26 +25,26 @@ public class PaymentController {
     private final PaymentService paymentService;
 
      @GetMapping("/{id}")
-    public ResponseEntity<PaymentDTO> getPayment(@PathVariable("id") Long id) {
-        PaymentDTO paymentDTO = paymentService.getPayment(id);
-        return new ResponseEntity<>(paymentDTO, HttpStatus.OK);
+    public PaymentDTO getPayment(@PathVariable Long id) {
+        return paymentService.getPayment(id);
     }
 
     // Endpoint para listar pagos, opcionalmente por usuario
-    @GetMapping
-    public ResponseEntity<Page<PaymentDTO>> listPayments(
-            @RequestParam(value = "userid", required = false) Long userid,
-            Pageable pageable) {
-        Page<PaymentDTO> payments = paymentService.listPayments(userid, pageable);
-        return new ResponseEntity<>(payments, HttpStatus.OK);
+    @GetMapping("/user/{userid}")
+    public Page<PaymentDTO> listPayments(
+            @PathVariable Long userid,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size) {
+
+        return  paymentService.listPayments(userid, PageRequest.of(page, size));
     }
 
-    @PostMapping("/{id}/pay")
-    public ResponseEntity<PaymentDTO> simulatePayment(
+
+    @PostMapping("/{id}/pay/{cardNumber}")
+    public PaymentDTO simulatePayment(
             @PathVariable("id") Long paymentId,
-            @RequestParam("cardNumber") String cardNumber) {
-        PaymentDTO paymentDTO = paymentService.simulatePayment(paymentId, cardNumber);
-        return new ResponseEntity<>(paymentDTO, HttpStatus.OK);
+            @PathVariable String cardNumber) {
+         return paymentService.simulatePayment(paymentId, cardNumber);
     }
     
 }
