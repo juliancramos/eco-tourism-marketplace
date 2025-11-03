@@ -1,0 +1,25 @@
+services:
+
+  config-server:
+    build:
+      context: ./config-server
+    container_name: config-server
+    ports:
+      - "8888:8888"
+    networks:
+      - eco-tourism-marketplace-network
+
+  eureka-server:
+    build:
+      context: ./eureka-server
+    container_name: eureka-server
+    ports:
+      - "8761:8761"
+    depends_on:
+      - config-server
+    networks:
+      - eco-tourism-marketplace-network
+
+networks:
+  eco-tourism-marketplace-network:
+    driver: bridge
