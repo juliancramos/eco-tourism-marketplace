@@ -123,6 +123,7 @@
         </dependencies>
     </dependencyManagement>
     <build>
+        <finalName>cart-service</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
