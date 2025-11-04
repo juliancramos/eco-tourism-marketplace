@@ -20,6 +20,27 @@ services:
     networks:
       - eco-tourism-marketplace-network
 
+  user-profile-service:
+    build:
+      context: ./user-profile-service
+    container_name: user-profile-service
+    ports:
+      - "8081:8081"
+    depends_on:
+      - config-server
+      - eureka-server
+    environment:
+      #- CONFIG_SERVER_URI
+      - spring_datasource_url
+      - spring_datasource_username
+      - spring_datasource_password
+      - spring_datasource_driver_class_name
+      - EUREKA_SERVER_URL
+      - CONFIG_SERVER_URL
+    networks:
+      - eco-tourism-marketplace-network
+
+
 networks:
   eco-tourism-marketplace-network:
     driver: bridge
