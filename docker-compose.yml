@@ -75,6 +75,26 @@ services:
     networks:
       - eco-tourism-marketplace-network
 
+  cart-service:
+    build:
+      context: ./cart-service
+    container_name: cart-service
+    ports:
+      - "8085:8085"
+    depends_on:
+      - config-server
+      - eureka-server
+    environment:
+      - spring_datasource_url
+      - spring_datasource_username
+      - spring_datasource_password
+      - spring_datasource_driver_class_name
+      - EUREKA_SERVER_URL
+      - CONFIG_SERVER_URL
+    networks:
+      - eco-tourism-marketplace-network
+
+
 
 
 networks:
