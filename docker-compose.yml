@@ -93,6 +93,25 @@ services:
       - CONFIG_SERVER_URL
     networks:
       - eco-tourism-marketplace-network
+  
+  service-review-questions:
+    build:
+      context: ./service-review-questions
+    container_name: service-review-questions
+    ports:
+      - "8083:8083"
+    depends_on:
+      - config-server
+      - eureka-server
+    environment:
+      - spring_datasource_url
+      - spring_datasource_username
+      - spring_datasource_password
+      - spring_datasource_driver_class_name
+      - EUREKA_SERVER_URL
+      - CONFIG_SERVER_URL
+    networks:
+      - eco-tourism-marketplace-network
 
 
 
