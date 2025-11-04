@@ -56,6 +56,26 @@ services:
       - eco-tourism-marketplace-network
 
 
+  service-catalog:
+    build:
+      context: ./service-catalog
+    container_name: service-catalog
+    ports:
+      - "8082:8082"
+    depends_on:
+      - config-server
+      - eureka-server
+    environment:
+      - spring_datasource_url
+      - spring_datasource_username
+      - spring_datasource_password
+      - spring_datasource_driver_class_name
+      - EUREKA_SERVER_URL
+      - CONFIG_SERVER_URL
+    networks:
+      - eco-tourism-marketplace-network
+
+
 
 networks:
   eco-tourism-marketplace-network:
