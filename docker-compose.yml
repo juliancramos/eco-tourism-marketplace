@@ -113,6 +113,25 @@ services:
     networks:
       - eco-tourism-marketplace-network
 
+  payment-service:
+    build:
+      context: ./payment-service
+    container_name: payment-service
+    ports:
+      - "8087:8087"
+    depends_on:
+      - config-server
+      - eureka-server
+    environment:
+      - spring_datasource_url
+      - spring_datasource_username
+      - spring_datasource_password
+      - spring_datasource_driver_class_name
+      - EUREKA_SERVER_URL
+      - CONFIG_SERVER_URL
+    networks:
+      - eco-tourism-marketplace-network
+
 
 
 
