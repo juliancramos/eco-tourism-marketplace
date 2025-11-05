@@ -22,8 +22,8 @@ Authorization: Bearer {{auth_token}}
 Content-Type: application/json
 
 
-### 3. GET Pagos del usuario 35 (repetido)
-GET {{host}}/payment-service/payments/user/35
+### 3. GET Pagos pago en específico
+GET {{host}}/payment-service/payments/3
 Authorization: Bearer {{auth_token}}
 Content-Type: application/json
 
