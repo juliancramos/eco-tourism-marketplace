@@ -49,10 +49,37 @@ public class ServiceController {
 
     @PutMapping("/{id}")
     public ServiceDTO update(@PathVariable Long id, @Valid @RequestBody UpdateServiceDTO dto) {
-        return svc.update(new UpdateServiceDTO(
-                id, dto.providerId(), dto.categoryId(), dto.title(), dto.description(),
-                dto.price(), dto.currency(), dto.active(), dto.countryCode(), dto.cityCode(),
-                dto.address(), dto.images()));
+
+        UpdateServiceDTO fixedDto = new UpdateServiceDTO(
+                id,                    
+                dto.providerId(),
+                dto.categoryId(),
+                dto.title(),
+                dto.description(),
+                dto.price(),
+                dto.currency(),
+                dto.active(),
+                dto.countryCode(),
+                dto.cityCode(),
+
+                // Alojamiento
+                dto.startDate(),
+                dto.endDate(),
+
+                // Transporte
+                dto.transportType(),
+                dto.routeOrigin(),
+                dto.routeDestination(),
+
+                // Común
+                dto.address(),
+                dto.latitude(),
+                dto.longitude(),
+
+                dto.images()
+        );
+
+        return svc.update(fixedDto);
     }
 
     @DeleteMapping("/{id}")

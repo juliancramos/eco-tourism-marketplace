@@ -34,6 +34,7 @@ public class ServiceCatalogServiceImpl implements ServiceCatalogService {
     private final ServiceCategoryRepository categoryRepository;
     private final ProviderCacheRepository providerCacheRepository;
     private final ServiceEventPublisher serviceEventPublisher;
+    private final ServiceEnrichmentOrchestrator enrichmentOrchestrator;
 
     @Override
     @Transactional
@@ -45,17 +46,17 @@ public class ServiceCatalogServiceImpl implements ServiceCatalogService {
     @Override
     @Transactional(readOnly = true)
     public ServiceDTO getService(Long id) {
-        var e = serviceRepository.findById(id).orElseThrow();
-        // inicializa explícitamente
+        ServiceEntity e = serviceRepository.findById(id).orElseThrow();
         Hibernate.initialize(e.getImages());
-        return ServiceMapper.toDto(e);
+
+        // 🔥 Enriquecer ANTES de mapear
+        return enrichmentOrchestrator.enrich(e);
     }
 
     @Override
     @Transactional
     public Page<ServiceCategoryDTO> listCategories(Pageable pageable) {
-        return categoryRepository
-                .findAll(pageable)
+        return categoryRepository.findAll(pageable)
                 .map(c -> new ServiceCategoryDTO(c.getId(), c.getName()));
     }
 
@@ -66,10 +67,13 @@ public class ServiceCatalogServiceImpl implements ServiceCatalogService {
 
         if (categoryId != null && active != null) {
             page = serviceRepository.findByCategoryIdAndActive(categoryId, active, pageable);
+
         } else if (cityCode != null && active != null) {
             page = serviceRepository.findByCityCodeAndActive(cityCode, active, pageable);
+
         } else if (active != null) {
             page = serviceRepository.findByActive(active, pageable);
+
         } else {
             page = serviceRepository.findAll(pageable);
         }
@@ -77,6 +81,7 @@ public class ServiceCatalogServiceImpl implements ServiceCatalogService {
         return page.map(ServiceMapper::toDto);
     }
 
+    @Override
     public ServiceCategoryDTO createCategory(CreateServiceCategoryDTO dto) {
         var c = new ServiceCategory();
         c.setName(dto.name());
@@ -87,29 +92,39 @@ public class ServiceCatalogServiceImpl implements ServiceCatalogService {
     @Override
     public ServiceDTO create(CreateServiceDTO dto) {
 
-        // check providerId
+        // validar provider
         if (!providerCacheRepository.existsById(dto.providerId())) {
             throw new EntityNotFoundException("Provider not found with id: " + dto.providerId());
         }
 
-        var e = new ServiceEntity();
+        // Crear entidad
+        ServiceEntity e = new ServiceEntity();
         ServiceMapper.applyCreate(e, dto, LocalDateTime.now());
         e = serviceRepository.save(e);
 
-        //publish niew service
+        // Publicar evento
         serviceEventPublisher.publishServiceCreated(
-            new ServiceCreatedEvent(e.getId(), e.getTitle(), e.getActive() ? "ACTIVE" : "INACTIVE")
+            new ServiceCreatedEvent(
+                e.getId(),
+                e.getTitle(),
+                e.getActive() ? "ACTIVE" : "INACTIVE"
+            )
         );
 
-        return ServiceMapper.toDto(e);
+        // 🔥 Enriquecer ANTES de devolver
+        return enrichmentOrchestrator.enrich(e);
     }
 
     @Override
     public ServiceDTO update(UpdateServiceDTO dto) {
-        var e = serviceRepository.findById(dto.id()).orElseThrow();
+
+        ServiceEntity e = serviceRepository.findById(dto.id()).orElseThrow();
+
         ServiceMapper.applyUpdate(e, dto);
         e = serviceRepository.save(e);
-        return ServiceMapper.toDto(e);
+
+        // 🔥 Enriquecer ANTES de devolver
+        return enrichmentOrchestrator.enrich(e);
     }
 
     @Override

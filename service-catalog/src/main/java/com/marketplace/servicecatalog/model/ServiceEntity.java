@@ -68,6 +68,39 @@ public class ServiceEntity {
     @Column(name = "CREATION_DATE", nullable = false)
     private LocalDateTime creationDate;
 
+    //CAMPOS OPCIONALES POR CATEGORÍA
+
+    // 🔵 Alojamiento → fechas de estancia
+    @Column(name = "START_DATE", nullable = true)
+    private LocalDateTime startDate;
+
+    @Column(name = "END_DATE", nullable = true)
+    private LocalDateTime endDate;
+
+    // 🔵 Transporte → tipo y ruta
+    @Column(name = "TRANSPORT_TYPE", nullable = true)
+    private String transportType; // terrestre / aéreo / marítimo
+
+    @Column(name = "ROUTE_ORIGIN", nullable = true)
+    private String routeOrigin;
+
+    @Column(name = "ROUTE_DESTINATION", nullable = true)
+    private String routeDestination;
+
+    // 🔵 Coordenadas obtenidas desde Google Maps
+    @Column(name = "LATITUDE", nullable = true)
+    private Double latitude;
+
+    @Column(name = "LONGITUDE", nullable = true)
+    private Double longitude;
+
+    // 🔵 Información externa almacenada como JSON
+    @Column(name = "COUNTRY_INFO_JSON", columnDefinition = "TEXT", nullable = true)
+    private String countryInfo;
+
+    @Column(name = "WEATHER_INFO_JSON", columnDefinition = "TEXT", nullable = true)
+    private String weatherInfo;
+
     @Builder.Default
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "service", cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("position ASC")
