@@ -14,7 +14,7 @@ spring:
         kafka:
           binder:
             # 9092 is the default port of Kafka
-            brokers: ${KAFKA_BOOTSTRAP_SERVERS:2.tcp.ngrok.io:17669}
+            brokers: ${KAFKA_BOOTSTRAP_SERVERS:4.tcp.ngrok.io:18305}
             configuration:
               acks: all                      
               enable.idempotence: true  
