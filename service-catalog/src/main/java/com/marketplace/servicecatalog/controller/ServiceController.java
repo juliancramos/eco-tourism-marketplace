@@ -2,15 +2,7 @@ package com.marketplace.servicecatalog.controller;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.marketplace.servicecatalog.dto.CreateServiceDTO;
 import com.marketplace.servicecatalog.dto.ServiceDTO;
@@ -19,6 +11,7 @@ import com.marketplace.servicecatalog.service.ServiceCatalogService;
 
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import reactor.core.publisher.Mono;
 
 @RestController
 @RequestMapping("/services")
@@ -28,7 +21,7 @@ public class ServiceController {
     private final ServiceCatalogService svc;
 
     @GetMapping("/{id}")
-    public ServiceDTO get(@PathVariable Long id) {
+    public Mono<ServiceDTO> get(@PathVariable Long id) {
         return svc.getService(id);
     }
 
@@ -43,15 +36,15 @@ public class ServiceController {
     }
 
     @PostMapping
-    public ServiceDTO create(@Valid @RequestBody CreateServiceDTO dto) {
+    public Mono<ServiceDTO> create(@Valid @RequestBody CreateServiceDTO dto) {
         return svc.create(dto);
     }
 
     @PutMapping("/{id}")
-    public ServiceDTO update(@PathVariable Long id, @Valid @RequestBody UpdateServiceDTO dto) {
+    public Mono<ServiceDTO> update(@PathVariable Long id, @Valid @RequestBody UpdateServiceDTO dto) {
 
         UpdateServiceDTO fixedDto = new UpdateServiceDTO(
-                id,                    
+                id,
                 dto.providerId(),
                 dto.categoryId(),
                 dto.title(),
@@ -61,21 +54,14 @@ public class ServiceController {
                 dto.active(),
                 dto.countryCode(),
                 dto.cityCode(),
-
-                // Alojamiento
                 dto.startDate(),
                 dto.endDate(),
-
-                // Transporte
                 dto.transportType(),
                 dto.routeOrigin(),
                 dto.routeDestination(),
-
-                // Común
                 dto.address(),
                 dto.latitude(),
                 dto.longitude(),
-
                 dto.images()
         );
 
@@ -86,5 +72,4 @@ public class ServiceController {
     public void delete(@PathVariable Long id) {
         svc.delete(id);
     }
-
 }

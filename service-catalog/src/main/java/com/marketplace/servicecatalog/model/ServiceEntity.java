@@ -102,8 +102,7 @@ public class ServiceEntity {
     private String weatherInfo;
 
     @Builder.Default
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "service", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "service", cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("position ASC")
     private List<ServiceImage> images = new ArrayList<>();
-    
 }

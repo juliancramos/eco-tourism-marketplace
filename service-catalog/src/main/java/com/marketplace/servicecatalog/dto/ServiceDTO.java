@@ -17,18 +17,24 @@ public record ServiceDTO(
     String address,
     LocalDateTime creationDate,
 
-    // NUEVO: alojamiento
+    // Alojamiento
     LocalDateTime startDate,
     LocalDateTime endDate,
 
-    // NUEVO: transporte
+    // Transporte
     String transportType,
     String routeOrigin,
     String routeDestination,
 
-    // NUEVO: coordenadas
+    // Coordenadas
     Double latitude,
     Double longitude,
 
-    List<ServiceImageDTO> images
+    // Imágenes
+    List<ServiceImageDTO> images,
+
+    // 🔥 NUEVOS CAMPOS
+    CountryInfoDTO country,
+    MapsInfoDTO maps,
+    WeatherReportDTO weather
 ) {}

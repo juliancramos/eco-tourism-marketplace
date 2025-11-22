@@ -1,83 +1,133 @@
 package com.marketplace.servicecatalog.service.impl;
 
-import java.util.List;
-import java.util.Map;
+import com.marketplace.servicecatalog.dto.MapsInfoDTO;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import com.marketplace.servicecatalog.dto.MapsInfoDTO;
+import reactor.core.publisher.Mono;
 
-@Service
+@Slf4j
+@Component
+@RequiredArgsConstructor
 public class GoogleMapsClient {
 
-    private final WebClient webClient = WebClient.create();
+    private final WebClient nominatimClient = WebClient.builder()
+            .baseUrl("https://nominatim.openstreetmap.org")
+            .defaultHeader("User-Agent", "EcoTourism-App/1.0")
+            .build();
 
-    /**
-     * Geocoding GRATIS usando OpenStreetMap (Nominatim)
-     */
-    public MapsInfoDTO geocode(String address) {
-        String url = "https://nominatim.openstreetmap.org/search";
+    private final WebClient osrmClient = WebClient.builder()
+            .baseUrl("http://router.project-osrm.org")
+            .build();
 
-        List response = webClient.get()
-                .uri(uriBuilder -> uriBuilder
-                        .path(url)
+
+    // ============================================================
+    // 1) GEOCODING (Nominatim)
+    // ============================================================
+    public Mono<MapsInfoDTO> geocode(String address) {
+        return nominatimClient.get()
+                .uri(uri -> uri
+                        .path("/search")
                         .queryParam("q", address)
                         .queryParam("format", "json")
                         .queryParam("limit", "1")
                         .build())
-                .header("User-Agent", "EcoTourismMarketplace/1.0") // requerido por Nominatim
                 .retrieve()
-                .bodyToMono(List.class)
-                .block();
-
-        if (response == null || response.isEmpty()) return null;
-
-        Map data = (Map) response.get(0);
-
-        Double lat = Double.parseDouble(data.get("lat").toString());
-        Double lon = Double.parseDouble(data.get("lon").toString());
-
-        return new MapsInfoDTO(lat, lon, null);
+                .bodyToFlux(OSMNominatimResponse.class)
+                .next()
+                .map(res -> {
+                    log.warn("📍 [NOMINATIM] '{}' => lat={}, lon={}", address, res.lat(), res.lon());
+                    return new MapsInfoDTO(
+                            res.lat(),
+                            res.lon(),
+                            null
+                    );
+                })
+                .onErrorResume(ex -> {
+                    log.error("❌ [NOMINATIM] Error geocoding '{}': {}", address, ex.getMessage());
+                    return Mono.empty();
+                });
     }
 
-    /**
-     * Rutas GRATIS usando OSRM (Open Source Routing Machine)
-     */
-    public MapsInfoDTO getRoute(String originAddress, String destinationAddress) {
 
-        // Primero geocodificamos origen y destino
-        MapsInfoDTO origin = geocode(originAddress);
-        MapsInfoDTO destination = geocode(destinationAddress);
+    // ============================================================
+    // 2) RUTAS OSRM — Correcto: primero geocoding, luego ruta con coords
+    // ============================================================
+    public Mono<MapsInfoDTO> getRoute(String origin, String destination) {
 
-        if (origin == null || destination == null) return null;
+        // 1️⃣ Geocoding origen
+        Mono<MapsInfoDTO> originGeo = geocode(origin)
+                .switchIfEmpty(Mono.error(
+                        new RuntimeException("No se pudo geocodificar origen: " + origin)
+                ));
 
-        String url = String.format(
-            "https://router.project-osrm.org/route/v1/driving/%f,%f;%f,%f",
-            origin.longitude(), origin.latitude(),
-            destination.longitude(), destination.latitude()
-        );
+        // 2️⃣ Geocoding destino
+        Mono<MapsInfoDTO> destGeo = geocode(destination)
+                .switchIfEmpty(Mono.error(
+                        new RuntimeException("No se pudo geocodificar destino: " + destination)
+                ));
 
-        Map response = webClient.get()
-                .uri(uriBuilder -> uriBuilder
-                        .path(url)
-                        .queryParam("overview", "full")
-                        .queryParam("geometries", "polyline")
-                        .build())
-                .header("User-Agent", "EcoTourismMarketplace/1.0")
-                .retrieve()
-                .bodyToMono(Map.class)
-                .block();
+        // 3️⃣ Combinar origen + destino => llamar OSRM con coordenadas reales
+        return Mono.zip(originGeo, destGeo)
+                .flatMap(tuple -> {
 
-        if (response == null || response.get("routes") == null) return null;
+                    MapsInfoDTO o = tuple.getT1();
+                    MapsInfoDTO d = tuple.getT2();
 
-        List routes = (List) response.get("routes");
-        if (routes.isEmpty()) return null;
+                    // Coordenadas OSRM deben ser LON,LAT
+                    String oCoord = o.longitude() + "," + o.latitude();
+                    String dCoord = d.longitude() + "," + d.latitude();
 
-        Map route = (Map) routes.get(0);
+                    log.warn("🛣 [OSRM] Ruta coords: {} → {}", oCoord, dCoord);
 
-        String polyline = route.get("geometry").toString();
+                    return osrmClient.get()
+                            .uri(uri -> uri
+                                    .path("/route/v1/driving/{o};{d}")
+                                    .queryParam("overview", "full")
+                                    .queryParam("geometries", "polyline")
+                                    .build(oCoord, dCoord)
+                            )
+                            .retrieve()
+                            .bodyToMono(OSRMRouteResponse.class)
+                            .map(route -> {
+                                String polyline = null;
 
-        return new MapsInfoDTO(null, null, polyline);
+                                if (route.routes() != null && !route.routes().isEmpty()) {
+                                    polyline = route.routes().get(0).geometry();
+                                }
+
+                                // Retornamos MapsInfo con lat/lon del DESTINO (final)
+                                return new MapsInfoDTO(
+                                        d.latitude(),
+                                        d.longitude(),
+                                        polyline
+                                );
+                            });
+                })
+                .onErrorResume(ex -> {
+                    log.error("❌ [MAPS] Error obteniendo ruta {} → {}: {}", 
+                            origin, destination, ex.getMessage());
+                    return Mono.empty();
+                });
+    }
+
+
+    // ============================================================
+    // DTOs internos para JSON
+    // ============================================================
+    record OSMNominatimResponse(
+            Double lat,
+            Double lon
+    ) {}
+
+    record OSRMRouteResponse(
+            java.util.List<Route> routes
+    ) {
+        record Route(
+                String geometry
+        ) {}
     }
 }

@@ -14,23 +14,27 @@ import org.springframework.web.reactive.function.client.WebClient;
 import com.marketplace.servicecatalog.dto.DailyWeatherDTO;
 import com.marketplace.servicecatalog.dto.WeatherReportDTO;
 
+import reactor.core.publisher.Mono;
+
 @Service
 public class WeatherApiClient {
 
     @Value("${weather.api.key}")
     private String apiKey;
 
-    private final WebClient webClient = WebClient.create();
+    private final WebClient webClient = WebClient.builder()
+            .baseUrl("https://api.openweathermap.org")
+            .build();
 
-    public WeatherReportDTO getWeather(Double lat, Double lon) {
+    public Mono<WeatherReportDTO> getWeather(Double lat, Double lon) {
 
-        if (lat == null || lon == null) return null;
+        if (lat == null || lon == null) {
+            return Mono.empty();
+        }
 
-        String url = "https://api.openweathermap.org/data/2.5/forecast";
-
-        Map response = webClient.get()
+        return webClient.get()
                 .uri(uriBuilder -> uriBuilder
-                        .path(url)
+                        .path("/data/2.5/forecast")
                         .queryParam("lat", lat)
                         .queryParam("lon", lon)
                         .queryParam("appid", apiKey)
@@ -38,43 +42,47 @@ public class WeatherApiClient {
                         .build())
                 .retrieve()
                 .bodyToMono(Map.class)
-                .block();
+                .flatMap(response -> {
+                    Object listObj = response.get("list");
+                    if (!(listObj instanceof List<?> list)) {
+                        return Mono.empty();
+                    }
 
-        if (response == null) return null;
+                    List<DailyWeatherDTO> daily = list.stream()
+                            .map(item -> {
+                                Map<?, ?> entry = (Map<?, ?>) item;
 
-        List list = (List) response.get("list");
-        if (list == null) return null;
+                                Long ts = ((Number) entry.get("dt")).longValue();
+                                LocalDateTime date = LocalDateTime.ofInstant(
+                                        Instant.ofEpochSecond(ts),
+                                        ZoneId.systemDefault()
+                                );
 
-        // Convert to daily forecast
-        List<DailyWeatherDTO> daily = (List<DailyWeatherDTO>) list.stream()
-                .map(item -> {
-                    Map entry = (Map) item;
+                                Map<?, ?> main = (Map<?, ?>) entry.get("main");
+                                Double temp = ((Number) main.get("temp")).doubleValue();
 
-                    Long ts = ((Number) entry.get("dt")).longValue();
-                    LocalDateTime date = LocalDateTime.ofInstant(
-                            Instant.ofEpochSecond(ts),
-                            ZoneId.systemDefault()
-                    );
+                                List<?> weatherList = (List<?>) entry.get("weather");
+                                Map<?, ?> weather = (Map<?, ?>) weatherList.get(0);
+                                String condition = weather.get("description").toString();
 
-                    Map main = (Map) entry.get("main");
-                    Double temp = ((Number) main.get("temp")).doubleValue();
+                                return new DailyWeatherDTO(date, temp, condition);
+                            })
+                            .collect(Collectors.toList());
 
-                    List weatherList = (List) entry.get("weather");
-                    Map weather = (Map) weatherList.get(0);
-                    String condition = weather.get("description").toString();
+                    Map<?, ?> city = (Map<?, ?>) response.get("city");
+                    String summary = city != null ? city.get("name").toString() : null;
 
-                    return new DailyWeatherDTO(date, temp, condition);
-                })
-                .collect(Collectors.toList());
+                    Double min = daily.stream()
+                            .map(DailyWeatherDTO::temperature)
+                            .min(Double::compareTo)
+                            .orElse(null);
 
-        // Summary = city name
-        Map city = (Map) response.get("city");
-        String summary = city != null ? city.get("name").toString() : null;
+                    Double max = daily.stream()
+                            .map(DailyWeatherDTO::temperature)
+                            .max(Double::compareTo)
+                            .orElse(null);
 
-        // min/max temperatures
-        Double min = daily.stream().map(DailyWeatherDTO::temperature).min(Double::compareTo).orElse(null);
-        Double max = daily.stream().map(DailyWeatherDTO::temperature).max(Double::compareTo).orElse(null);
-
-        return new WeatherReportDTO(summary, min, max, daily);
+                    return Mono.just(new WeatherReportDTO(summary, min, max, daily));
+                });
     }
 }

@@ -88,7 +88,7 @@ Content-Type: application/json
 ### 6. OBTENER SERVICIO ALOJAMIENTO (ID 1)
 ### 🔥 Validar conexión a Google Maps + Weather + País
 ###############################################
-GET {{host}}/services/1
+GET {{host}}/services/46
 Authorization: Bearer {{auth_token}}
 Content-Type: application/json
 
@@ -104,7 +104,7 @@ Content-Type: application/json
 
 {
   "providerId": 29,
-  "categoryId": 2,
+  "categoryId": 3,
   "title": "Transporte Aeropuerto",
   "description": "Ruta aeropuerto -> hotel",
   "price": 40.0,
@@ -117,8 +117,8 @@ Content-Type: application/json
   "endDate": null,
 
   "transportType": "terrestre",
-  "routeOrigin": "Aeropuerto El Dorado Bogotá",
-  "routeDestination": "Hotel Tequendama Bogotá",
+  "routeOrigin": "Aeropuerto El Dorado, Bogotá, Colombia",
+  "routeDestination": "Hotel Tequendama, Bogotá, Colombia",
 
   "address": null,
   "latitude": null,
@@ -135,51 +135,10 @@ Content-Type: application/json
 ### 8. OBTENER SERVICIO TRANSPORTE (ID 2)
 ### 🔥 Valida Google Directions + Weather
 ###############################################
-GET {{host}}/services/2
+GET {{host}}/services/52
 Authorization: Bearer {{auth_token}}
 Content-Type: application/json
 
 
 
-###############################################
-### 9. CREAR SERVICIO GENERAL (Cat 3)
-### 🔥 Prueba: SOLO RestCountries
-###############################################
-POST {{host}}/services
-Authorization: Bearer {{auth_token}}
-Content-Type: application/json
 
-{
-  "providerId": 22,
-  "categoryId": 3,
-  "title": "Servicio General",
-  "description": "Servicio manual simple",
-  "price": 20.0,
-  "currency": "USD",
-  "active": true,
-  "countryCode": "COL",
-  "cityCode": "BOG",
-
-  "startDate": null,
-  "endDate": null,
-
-  "transportType": null,
-  "routeOrigin": null,
-  "routeDestination": null,
-
-  "address": "Calle 26 #45-02",
-  "latitude": null,
-  "longitude": null,
-
-  "images": []
-}
-
-
-
-###############################################
-### 10. OBTENER SERVICIO GENERAL (ID 3)
-### 🔥 Valida solo RestCountries
-###############################################
-GET {{host}}/services/3
-Authorization: Bearer {{auth_token}}
-Content-Type: application/json
