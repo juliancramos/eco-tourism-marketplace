@@ -1,0 +1,8 @@
+.git/
+*.iml
+*.log
+*.md
+.vscode/
+.idea/
+target/*
+!target/eureka-server.jar

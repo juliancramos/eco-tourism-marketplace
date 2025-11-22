@@ -1,3 +1,6 @@
+server:
+  port: 8087
+
 spring:
   application:
     name: payment-service
@@ -11,4 +14,4 @@ spring:
       kafka:
         binder:
           brokers: ${KAFKA_BOOTSTRAP_SERVERS:2.tcp.ngrok.io:17669}   
-spring.config.import: "configserver:http://localhost:8888"
+spring.config.import: "configserver:http://config-server:8888"
