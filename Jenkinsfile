@@ -16,7 +16,7 @@ pipeline {
             steps {
                 sh '''
                     echo "Iniciando build con Maven..."
-                    mvn clean package -DskipTests
+                    /usr/local/bin/mvn clean package -DskipTests
                 '''
             }
         }
@@ -25,10 +25,10 @@ pipeline {
             steps {
                 sh '''
                     echo "Deteniendo contenedores previos (por si ya existen)..."
-                    docker-compose down || true
+                    /usr/local/bin/docker-compose down || true
 
                     echo "Construyendo y levantando servicios..."
-                    docker-compose up -d --build
+                    /usr/local/bin/docker-compose up -d --build
                 '''
             }
         }
