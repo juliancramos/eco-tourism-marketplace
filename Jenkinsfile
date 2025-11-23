@@ -2,21 +2,34 @@ pipeline {
     agent any
 
     stages {
-        stage('Ver workspace') {
+
+        stage('Workspace Info') {
             steps {
                 sh '''
-                  echo "Ruta actual:"
-                  pwd
-                  echo "Contenido del proyecto:"
-                  ls
+                    echo "Ruta actual:"
+                    pwd
                 '''
             }
         }
 
         stage('Build Maven') {
             steps {
-                sh 'mvn -version'
-                sh 'mvn clean package -DskipTests'
+                sh '''
+                    echo "Iniciando build con Maven..."
+                    mvn clean package -DskipTests
+                '''
+            }
+        }
+
+        stage('Docker Compose Up') {
+            steps {
+                sh '''
+                    echo "Deteniendo contenedores previos (por si ya existen)..."
+                    docker-compose down || true
+
+                    echo "Construyendo y levantando servicios..."
+                    docker-compose up -d --build
+                '''
             }
         }
     }
