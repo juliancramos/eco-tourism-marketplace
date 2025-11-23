@@ -8,8 +8,15 @@ pipeline {
                   echo "Ruta actual:"
                   pwd
                   echo "Contenido del proyecto:"
-                  ls -R
+                  ls
                 '''
+            }
+        }
+
+        stage('Build Maven') {
+            steps {
+                sh 'mvn -version'
+                sh 'mvn clean package -DskipTests'
             }
         }
     }
