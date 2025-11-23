@@ -11,10 +11,30 @@ public record ServiceDTO(
     String description,
     Double price,
     String currency,
-    boolean active,
+    Boolean active,
     String countryCode,
     String cityCode,
     String address,
     LocalDateTime creationDate,
-    List<ServiceImageDTO> images
-) {}    
+
+    // Alojamiento
+    LocalDateTime startDate,
+    LocalDateTime endDate,
+
+    // Transporte
+    String transportType,
+    String routeOrigin,
+    String routeDestination,
+
+    // Coordenadas
+    Double latitude,
+    Double longitude,
+
+    // Imágenes
+    List<ServiceImageDTO> images,
+
+    // 🔥 NUEVOS CAMPOS
+    CountryInfoDTO country,
+    MapsInfoDTO maps,
+    WeatherReportDTO weather
+) {}
