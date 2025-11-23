@@ -1,5 +1,6 @@
 package com.marketplace.servicecatalog.dto;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import jakarta.validation.constraints.NotBlank;
@@ -7,7 +8,8 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 
-public record  UpdateServiceDTO (
+public record UpdateServiceDTO(
+
     @NotNull Long id,
     @NotNull Long providerId,
     @NotNull Long categoryId,
@@ -18,6 +20,20 @@ public record  UpdateServiceDTO (
     @NotNull Boolean active,
     @NotBlank @Size(min = 3, max = 3) String countryCode,
     @NotBlank @Size(min = 1, max = 5) String cityCode,
+
+    // ALOJAMIENTO
+    LocalDateTime startDate,
+    LocalDateTime endDate,
+
+    // TRANSPORTE
+    String transportType,
+    String routeOrigin,
+    String routeDestination,
+
+    // COMÚN
     @Size(max = 400) String address,
+    Double latitude,
+    Double longitude,
+
     List<ServiceImageDTO> images
 ) {}
