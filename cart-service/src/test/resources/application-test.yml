@@ -1,0 +1,38 @@
+spring:
+  config:
+    import: ""
+
+  datasource:
+    url: jdbc:h2:mem:cartdb;MODE=Oracle;DB_CLOSE_DELAY=-1
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+
+  jpa:
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        # puedes usar H2Dialect o el de Oracle si quieres simular
+        dialect: org.hibernate.dialect.H2Dialect
+
+  cloud:
+    stream:
+      kafka:
+        binder:
+          # basta con algo dummy; como en los tests de controladores
+          # estamos haciendo @MockBean de MQCheckoutService, NO se va a usar de verdad
+          brokers: ${KAFKA_BOOTSTRAP_SERVERS:4.tcp.ngrok.io:18305}
+          configuration:
+            acks: all
+            enable.idempotence: true
+      bindings:
+        paymentsRequest-out-0:
+          destination: payments.request
+
+server:
+  port: 0 
+
+eureka:
+  client:
+    enabled: false
