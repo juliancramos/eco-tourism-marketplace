@@ -1,0 +1,43 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:reviewquestionsdb;MODE=Oracle;DB_CLOSE_DELAY=-1
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+
+  jpa:
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+
+  cloud:
+    stream:
+      # DESACTIVAR COMPLETAMENTE KAFKA EN TESTS
+      default-binder: mock
+      kafka:
+        binder:
+          brokers: localhost:9092
+      bindings:
+        providerCreated-out-0:
+          destination: dummy
+          binder: mock
+        userCreated-out-0:
+          destination: dummy
+          binder: mock
+    function:
+      definition: ""  # Desactiva las funciones de streaming
+
+  # DESACTIVAR AUTO-CONFIGURACIÓN DE KAFKA
+  autoconfigure:
+    exclude:
+      - org.springframework.cloud.stream.binder.kafka.config.KafkaBinderConfiguration
+      - org.springframework.boot.autoconfigure.kafka.KafkaAutoConfiguration
+
+server:
+  port: 0
+
+eureka:
+  client:
+    enabled: false
