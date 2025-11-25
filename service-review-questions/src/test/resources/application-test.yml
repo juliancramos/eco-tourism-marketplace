@@ -14,11 +14,10 @@ spring:
 
   cloud:
     stream:
-      # DESACTIVAR COMPLETAMENTE KAFKA EN TESTS
       default-binder: mock
       kafka:
         binder:
-          brokers: localhost:9092
+          brokers: ${KAFKA_BOOTSTRAP_SERVERS:4.tcp.ngrok.io:18305}
       bindings:
         providerCreated-out-0:
           destination: dummy
@@ -27,9 +26,7 @@ spring:
           destination: dummy
           binder: mock
     function:
-      definition: ""  # Desactiva las funciones de streaming
-
-  # DESACTIVAR AUTO-CONFIGURACIÓN DE KAFKA
+      definition: "" 
   autoconfigure:
     exclude:
       - org.springframework.cloud.stream.binder.kafka.config.KafkaBinderConfiguration

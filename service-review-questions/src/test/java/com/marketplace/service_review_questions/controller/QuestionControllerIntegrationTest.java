@@ -40,7 +40,6 @@ class QuestionControllerIntegrationTest {
     @Autowired
     private AnswerRepository answerRepository;
 
-    // <<< MOCKS DE LAS CACHES >>>
     @MockBean
     private UserCacheRepository userCacheRepository;
 

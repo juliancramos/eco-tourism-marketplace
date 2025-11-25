@@ -13,15 +13,12 @@ spring:
       ddl-auto: create
     properties:
       hibernate:
-        # puedes usar H2Dialect o el de Oracle si quieres simular
         dialect: org.hibernate.dialect.H2Dialect
 
   cloud:
     stream:
       kafka:
         binder:
-          # basta con algo dummy; como en los tests de controladores
-          # estamos haciendo @MockBean de MQCheckoutService, NO se va a usar de verdad
           brokers: ${KAFKA_BOOTSTRAP_SERVERS:4.tcp.ngrok.io:18305}
           configuration:
             acks: all
