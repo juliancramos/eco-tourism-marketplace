@@ -16,64 +16,129 @@ grant_type=password&client_id={{client_id}}&username={{user}}&password={{pass}}
 @auth_token = {{login.response.body.$.access_token}}
 
 
-### 2. Crear categoría de servicio
+# ============================================================
+# 2. CREAR CATEGORÍAS PARA PRUEBAS
+# ============================================================
+
+### Alojamiento
 POST {{host}}/categories
 Authorization: Bearer {{auth_token}}
 Content-Type: application/json
 
 {
-  "name": "Limpieza"
+  "name": "Alojamiento"
 }
 
-
-### 3. Listar categorías de servicio
-GET {{host}}/categories
+### Transporte
+POST {{host}}/categories
 Authorization: Bearer {{auth_token}}
 Content-Type: application/json
 
+{
+  "name": "Transporte"
+}
 
-### 4. Obtener categoría por ID
-GET {{host}}/categories/1
+### Servicio General
+POST {{host}}/categories
 Authorization: Bearer {{auth_token}}
 Content-Type: application/json
 
+{
+  "name": "Servicios Generales"
+}
 
-### 5. Crear servicio
+###############################################
+### 5. CREAR SERVICIO ALOJAMIENTO (Cat 1)
+### 🔥 Prueba: Google Geocoding + Weather + RestCountries
+###############################################
 POST {{host}}/services
 Authorization: Bearer {{auth_token}}
 Content-Type: application/json
 
 {
-  "providerId": 22,
-  "categoryId": 21,
-  "title": "Limpieza de Casa",
-  "description": "Servicio de limpieza a domicilio",
-  "price": 50.0,
+  "providerId": 29,
+  "categoryId": 41,
+  "title": "Hotel Casa Bonita",
+  "description": "Habitación confortable",
+  "price": 120.0,
   "currency": "USD",
   "active": true,
   "countryCode": "COL",
   "cityCode": "BOG",
-  "address": "Calle 123 #45-67",
+
+  "startDate": "2025-01-20T00:00:00",
+  "endDate": "2025-01-25T00:00:00",
+
+  "transportType": null,
+  "routeOrigin": null,
+  "routeDestination": null,
+
+  "address": "Cra 7 # 32-16 Bogotá",
+  "latitude": null,
+  "longitude": null,
+
   "images": [
-    {"url": "http://example.com/image1.jpg", "position": 1},
-    {"url": "http://example.com/image2.jpg", "position": 2}
+    { "url": "http://example.com/hotel1.jpg", "position": 1 }
   ]
 }
 
 
-### 6. Listar servicios
-GET {{host}}/services
+
+###############################################
+### 6. OBTENER SERVICIO ALOJAMIENTO (ID 1)
+### 🔥 Validar conexión a Google Maps + Weather + País
+###############################################
+GET {{host}}/services/46
 Authorization: Bearer {{auth_token}}
 Content-Type: application/json
 
 
-### 7. Obtener servicio por ID
-GET {{host}}/services/3
+
+###############################################
+### 7. CREAR SERVICIO TRANSPORTE (Cat 2)
+### 🔥 Prueba: Google Directions + Weather + RestCountries
+###############################################
+POST {{host}}/services
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+{
+  "providerId": 29,
+  "categoryId": 3,
+  "title": "Transporte Aeropuerto",
+  "description": "Ruta aeropuerto -> hotel",
+  "price": 40.0,
+  "currency": "USD",
+  "active": true,
+  "countryCode": "COL",
+  "cityCode": "BOG",
+
+  "startDate": null,
+  "endDate": null,
+
+  "transportType": "terrestre",
+  "routeOrigin": "Aeropuerto El Dorado, Bogotá, Colombia",
+  "routeDestination": "Hotel Tequendama, Bogotá, Colombia",
+
+  "address": null,
+  "latitude": null,
+  "longitude": null,
+
+  "images": [
+    { "url": "http://example.com/car1.jpg", "position": 1 }
+  ]
+}
+
+
+
+###############################################
+### 8. OBTENER SERVICIO TRANSPORTE (ID 2)
+### 🔥 Valida Google Directions + Weather
+###############################################
+GET {{host}}/services/52
 Authorization: Bearer {{auth_token}}
 Content-Type: application/json
 
 
-### 8. Actualizar servicio
-PUT {{host}}/services/1
-Authorization: Bearer {{auth_token}}
-Content-Type: appli
+
+
