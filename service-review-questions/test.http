@@ -1,5 +1,5 @@
 # Variables globales
-@host = http://localhost:8080
+@host = http://3.91.156.161:8080
 @keycloak_host = https://e73d150e7cc3.ngrok-free.app
 @user = proveedor-prueba@example.com
 @pass = 123
@@ -17,7 +17,7 @@ grant_type=password&client_id={{client_id}}&username={{user}}&password={{pass}}
 
 
 ### 2. GET Review por ID
-GET {{host}}/service-review-questions/reviews/2
+GET {{host}}/service-review-questions/reviews/1
 Authorization: Bearer {{auth_token}}
 Content-Type: application/json
 
@@ -34,8 +34,8 @@ Authorization: Bearer {{auth_token}}
 Content-Type: application/json
 
 {
-  "serviceId": 5,
-  "userId": 2,
+  "serviceId": 1,
+  "userId": 1,
   "stars": 4,
   "commentText": "Excelente servicio, muy recomendable"
 }
@@ -78,9 +78,9 @@ Authorization: Bearer {{auth_token}}
 Content-Type: application/json
 
 {
-  "serviceId": 5,
-  "userId": 2,
-  "text": "¿Cuál es el horario de atención?",
+  "serviceId": 1,
+  "userId": 1,
+  "text": "¿Cuál es el horario de atención el lunes?",
   "answers": []
 }
 
