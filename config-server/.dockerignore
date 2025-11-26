@@ -1,0 +1,10 @@
+.git/
+*.iml
+*.log
+*.md
+.vscode/
+.idea/
+
+
+target/*
+!target/config-server.jar

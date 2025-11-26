@@ -9,16 +9,18 @@ import com.marketplace.servicecatalog.dto.ServiceCategoryDTO;
 import com.marketplace.servicecatalog.dto.ServiceDTO;
 import com.marketplace.servicecatalog.dto.UpdateServiceDTO;
 
+import reactor.core.publisher.Mono;
+
 public interface  ServiceCatalogService {
     ServiceCategoryDTO getCategory(Long id);
-    ServiceDTO   getService(Long id);
+     Mono<ServiceDTO> getService(Long id);
 
     Page<ServiceCategoryDTO> listCategories(Pageable pageable);
     Page<ServiceDTO> listServices(Long categoryId, String cityCode, Boolean active, Pageable pageable);
     ServiceCategoryDTO createCategory(CreateServiceCategoryDTO name);
 
-    ServiceDTO create(CreateServiceDTO dto);
-    ServiceDTO update(UpdateServiceDTO dto);
+    Mono<ServiceDTO> create(CreateServiceDTO dto);
+    Mono<ServiceDTO> update(UpdateServiceDTO dto);
     void delete(Long id);
 
     Page<ServiceDTO> listServicesByProvider(Long providerId, Pageable pageable);

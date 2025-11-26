@@ -1,5 +1,5 @@
 # Variables globales
-@host = http://localhost:8080/cart-service
+@host = http://184.72.84.92:8080/cart-service
 @keycloak_host = https://e73d150e7cc3.ngrok-free.app
 @user = proveedor-prueba@example.com
 @pass = 123
@@ -17,13 +17,13 @@ grant_type=password&client_id={{client_id}}&username={{user}}&password={{pass}}
 
 
 ### 2. Crear carrito para usuario 1
-POST {{host}}/cart/user/70
+POST {{host}}/cart/user/1
 Authorization: Bearer {{auth_token}}
 Content-Type: application/json
 
 
 ### 3. Obtener carrito por ID
-GET {{host}}/cart/62
+GET {{host}}/cart/1
 Authorization: Bearer {{auth_token}}
 Content-Type: application/json
 
@@ -35,12 +35,12 @@ Content-Type: application/json
 
 
 ### 5. Agregar ítem al carrito
-POST {{host}}/cart/62/items
+POST {{host}}/cart/1/items
 Authorization: Bearer {{auth_token}}
 Content-Type: application/json
 
 {
-  "serviceId": 5,
+  "serviceId": 3,
   "quantity": 2
 }
 
@@ -68,7 +68,7 @@ Content-Type: application/json
 
 
 ### 9. Obtener orden por ID
-GET {{host}}/orders/1
+GET {{host}}/orders/2
 Authorization: Bearer {{auth_token}}
 Content-Type: application/json
 

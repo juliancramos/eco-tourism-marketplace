@@ -13,7 +13,7 @@ info:
 
 spring:
   kafka:
-    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:2.tcp.ngrok.io:17669}
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:4.tcp.ngrok.io:18305}
     consumer:
       group-id: service-review-questions
       auto-offset-reset: earliest

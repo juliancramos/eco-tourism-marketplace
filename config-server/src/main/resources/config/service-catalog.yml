@@ -12,7 +12,7 @@ spring:
       path: /playground
 
   kafka:
-    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:2.tcp.ngrok.io:17669}
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:4.tcp.ngrok.io:18305}
     consumer:
       group-id: service-catalog
       auto-offset-reset: earliest
@@ -27,8 +27,11 @@ spring:
           content-type: application/json
       kafka:
         binder:
-          brokers: ${KAFKA_BOOTSTRAP_SERVERS:2.tcp.ngrok.io:17669}
+          brokers: ${KAFKA_BOOTSTRAP_SERVERS:4.tcp.ngrok.io:18305}
       defaultBinder: kafka
+weather:
+  api:
+    key: eb5f81a5ddc6cba0c677fb69bc2f6e00
 
 info:
   app:

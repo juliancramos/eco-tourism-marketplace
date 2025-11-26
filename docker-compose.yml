@@ -1,0 +1,158 @@
+services:
+
+  config-server:
+    build:
+      context: ./config-server
+    container_name: config-server
+    ports:
+      - "8888:8888"
+    networks:
+      - eco-tourism-marketplace-network
+
+  eureka-server:
+    build:
+      context: ./eureka-server
+    container_name: eureka-server
+    ports:
+      - "8761:8761"
+    depends_on:
+      - config-server
+    networks:
+      - eco-tourism-marketplace-network
+
+  user-profile-service:
+    build:
+      context: ./user-profile-service
+    container_name: user-profile-service
+    ports:
+      - "8081:8081"
+    depends_on:
+      - config-server
+      - eureka-server
+      - db
+    environment:
+      - spring_datasource_url
+      - spring_datasource_username
+      - spring_datasource_password
+      - spring_datasource_driver_class_name
+      - EUREKA_SERVER_URL
+      - CONFIG_SERVER_URL
+    networks:
+      - eco-tourism-marketplace-network
+
+  api-gateway:
+    build:
+      context: ./gateway-server
+    container_name: api-gateway
+    ports:
+      - "8080:8080"
+    depends_on:
+      - config-server
+      - eureka-server
+    environment:
+      - CONFIG_SERVER_URL
+      - EUREKA_SERVER_URL
+    networks:
+      - eco-tourism-marketplace-network
+
+  service-catalog:
+    build:
+      context: ./service-catalog
+    container_name: service-catalog
+    ports:
+      - "8082:8082"
+    depends_on:
+      - config-server
+      - eureka-server
+      - db
+    environment:
+      - spring_datasource_url
+      - spring_datasource_username
+      - spring_datasource_password
+      - spring_datasource_driver_class_name
+      - EUREKA_SERVER_URL
+      - CONFIG_SERVER_URL
+    networks:
+      - eco-tourism-marketplace-network
+
+  cart-service:
+    build:
+      context: ./cart-service
+    container_name: cart-service
+    ports:
+      - "8085:8085"
+    depends_on:
+      - config-server
+      - eureka-server
+      - db
+    environment:
+      - spring_datasource_url
+      - spring_datasource_username
+      - spring_datasource_password
+      - spring_datasource_driver_class_name
+      - EUREKA_SERVER_URL
+      - CONFIG_SERVER_URL
+    networks:
+      - eco-tourism-marketplace-network
+  
+  service-review-questions:
+    build:
+      context: ./service-review-questions
+    container_name: service-review-questions
+    ports:
+      - "8083:8083"
+    depends_on:
+      - config-server
+      - eureka-server
+      - db
+    environment:
+      - spring_datasource_url
+      - spring_datasource_username
+      - spring_datasource_password
+      - spring_datasource_driver_class_name
+      - EUREKA_SERVER_URL
+      - CONFIG_SERVER_URL
+    networks:
+      - eco-tourism-marketplace-network
+
+  payment-service:
+    build:
+      context: ./payment-service
+    container_name: payment-service
+    ports:
+      - "8087:8087"
+    depends_on:
+      - config-server
+      - eureka-server
+      - db
+    environment:
+      - spring_datasource_url
+      - spring_datasource_username
+      - spring_datasource_password
+      - spring_datasource_driver_class_name
+      - EUREKA_SERVER_URL
+      - CONFIG_SERVER_URL
+    networks:
+      - eco-tourism-marketplace-network
+
+  db:
+    image: postgres:15
+    container_name: marketplace-db
+    environment:
+      - POSTGRES_DB
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
+    ports:
+      - "5432:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+      - ./db/init:/docker-entrypoint-initdb.d
+    networks:
+      - eco-tourism-marketplace-network
+
+networks:
+  eco-tourism-marketplace-network:
+    driver: bridge
+
+volumes:
+  db-data:

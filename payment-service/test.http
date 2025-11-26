@@ -1,0 +1,39 @@
+# Variables globales
+@host = http://184.72.84.92:8080
+@keycloak_host = https://e73d150e7cc3.ngrok-free.app
+@user = proveedor-prueba@example.com
+@pass = 123
+@client_id = gateway-client
+
+### 1. Obtener token de Keycloak
+# @name login
+POST {{keycloak_host}}/realms/marketplace-realm/protocol/openid-connect/token
+Content-Type: application/x-www-form-urlencoded
+
+grant_type=password&client_id={{client_id}}&username={{user}}&password={{pass}}
+
+### Asignar variable auth_token automáticamente
+@auth_token = {{login.response.body.$.access_token}}
+
+
+### 2. GET Pagos del usuario 1
+GET {{host}}/payment-service/payments/user/1
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+
+### 3. GET Pagos pago en específico
+GET {{host}}/payment-service/payments/2
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+
+### 4. Realizar pago con tarjeta
+POST {{host}}/payment-service/payments/2/pay/1234567812345678
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+{
+  "amount": 1000,
+  "currency": "USD"
+}
