@@ -150,6 +150,17 @@ services:
     networks:
       - eco-tourism-marketplace-network
 
+  eco-tourism-frontend:
+    build:
+      context: ./eco-tourism-frontend
+    container_name: eco-tourism-frontend
+    ports:
+      - "5173:80"
+    depends_on:
+      - api-gateway
+    networks:
+      - eco-tourism-marketplace-network
+
 networks:
   eco-tourism-marketplace-network:
     driver: bridge
