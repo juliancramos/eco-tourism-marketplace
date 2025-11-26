@@ -1,3 +1,33 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+    body {
+        font-family: 'Poppins', sans-serif;
+    }
+}
+
+@layer components {
+    .btn-primary {
+        @apply bg-gradient-to-r from-blue-600 to-blue-700 text-white px-6 py-3 rounded-lg font-semibold hover:from-blue-700 hover:to-blue-800 transition-all duration-300 shadow-lg hover:shadow-xl;
+    }
+
+    .btn-secondary {
+        @apply bg-white text-blue-600 border-2 border-blue-600 px-6 py-3 rounded-lg font-semibold hover:bg-blue-50 transition-all duration-300;
+    }
+
+    .card {
+        @apply bg-white rounded-xl shadow-md hover:shadow-2xl transition-all duration-300 overflow-hidden;
+    }
+
+    .badge-discount {
+        @apply bg-gradient-to-r from-orange-500 to-orange-600 text-white px-3 py-1 rounded-full text-xs font-bold;
+    }
+
+    .badge-featured {
+        @apply bg-gradient-to-r from-purple-500 to-purple-600 text-white px-3 py-1 rounded-full text-xs font-bold;
+    }
+}

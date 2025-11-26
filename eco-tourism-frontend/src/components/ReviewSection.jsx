@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { MOCK_REVIEWS } from '../data/mockData';
 
 const ReviewSection = ({ serviceId }) => {
     const [reviews, setReviews] = useState([]);
@@ -12,11 +13,13 @@ const ReviewSection = ({ serviceId }) => {
 
     const fetchReviews = async () => {
         try {
-            const response = await axios.get(`http://localhost:8080/reviews?serviceId=${serviceId}`);
+            const apiUrl = import.meta.env.VITE_API_URL;
+            const response = await axios.get(`${apiUrl}/reviews?serviceId=${serviceId}`);
             setReviews(response.data.content || []);
             setLoading(false);
         } catch (error) {
-            console.error("Error fetching reviews:", error);
+            console.warn("Backend not reachable, using MOCK reviews.");
+            setReviews(MOCK_REVIEWS);
             setLoading(false);
         }
     };
@@ -24,7 +27,7 @@ const ReviewSection = ({ serviceId }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            // Hardcoded userId for demo purposes since we don't have full auth state yet
+            const apiUrl = import.meta.env.VITE_API_URL;
             const payload = {
                 serviceId: parseInt(serviceId),
                 userId: 1,
@@ -32,12 +35,12 @@ const ReviewSection = ({ serviceId }) => {
                 commentText: newReview.commentText
             };
 
-            await axios.post('http://localhost:8080/reviews', payload);
+            await axios.post(`${apiUrl}/reviews`, payload);
             setNewReview({ stars: 5, commentText: '' });
-            fetchReviews(); // Refresh list
+            fetchReviews();
         } catch (error) {
             console.error("Error submitting review:", error);
-            alert("Failed to submit review");
+            alert("Failed to submit review (Backend unreachable)");
         }
     };
 
