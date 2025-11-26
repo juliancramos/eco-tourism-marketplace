@@ -1,0 +1,55 @@
+spring:
+  application:
+    name: user-profile-service
+
+  config:
+    import: ""
+
+  cloud:
+    config:
+      enabled: false
+    stream:
+      # Deshabilitar Kafka completamente en tests
+      default-binder: mock
+      bindings:
+        providerCreated-out-0:
+          destination: provider.created
+          content-type: application/json
+        userCreated-out-0:       
+          destination: user.created
+          content-type: application/json
+      kafka:
+        binder:
+          brokers: localhost:9092
+          auto-create-topics: false
+
+  datasource:
+    url: jdbc:h2:mem:userprofiledb;MODE=PostgreSQL;DB_CLOSE_DELAY=-1
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+
+  kafka:
+    # Deshabilitar auto-configuración de Kafka en tests
+    bootstrap-servers: localhost:9092
+    
+server:
+  port: 0
+
+eureka:
+  client:
+    enabled: false
+
+# Información de la app (opcional en tests pero no hace daño)
+info:
+  app:
+    name: User profile Microservice
+    description: A microservice for the users profile operations
+    version: 1.0.0-TEST

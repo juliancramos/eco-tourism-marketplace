@@ -32,7 +32,7 @@ pipeline {
             steps {
                 sh """
                     echo "Iniciando build con Maven..."
-                    ${MVN_CMD} clean package -DskipTests
+                    ${MVN_CMD} clean package 
                 """
             }
         }
