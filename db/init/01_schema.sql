@@ -13,7 +13,7 @@ CREATE TABLE users (
     password        VARCHAR(255),
     name            VARCHAR(120),
     img_url         VARCHAR(500),
-    active          SMALLINT DEFAULT 1,
+    active          BOOLEAN NOT NULL DEFAULT TRUE,
     creation_date   DATE DEFAULT CURRENT_DATE,
     keycloak_user_id VARCHAR(200)
 );
@@ -57,7 +57,7 @@ CREATE TABLE service (
     description         VARCHAR(4000),
     price               NUMERIC(12,0),
     currency            CHAR(3),
-    active              SMALLINT DEFAULT 1,
+    active              BOOLEAN NOT NULL DEFAULT TRUE,
     creation_date       TIMESTAMP(6) DEFAULT CURRENT_TIMESTAMP,
     country_code        CHAR(3),
     city_code           CHAR(5),
@@ -85,7 +85,7 @@ CREATE TABLE social_network (
     name     VARCHAR(80),
     url_base VARCHAR(200),
     icon     VARCHAR(120),
-    active   SMALLINT DEFAULT 1
+    active   BOOLEAN NOT NULL DEFAULT TRUE
 );
 
 CREATE TABLE provider_social_network (
