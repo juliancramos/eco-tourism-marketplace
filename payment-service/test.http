@@ -1,5 +1,5 @@
 # Variables globales
-@host = http://3.91.156.161:8080
+@host = http://184.72.84.92:8080
 @keycloak_host = https://e73d150e7cc3.ngrok-free.app
 @user = proveedor-prueba@example.com
 @pass = 123
@@ -23,13 +23,13 @@ Content-Type: application/json
 
 
 ### 3. GET Pagos pago en específico
-GET {{host}}/payment-service/payments/1
+GET {{host}}/payment-service/payments/2
 Authorization: Bearer {{auth_token}}
 Content-Type: application/json
 
 
 ### 4. Realizar pago con tarjeta
-POST {{host}}/payment-service/payments/1/pay/1234567812345678
+POST {{host}}/payment-service/payments/2/pay/1234567812345678
 Authorization: Bearer {{auth_token}}
 Content-Type: application/json
 

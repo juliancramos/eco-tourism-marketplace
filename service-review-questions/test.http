@@ -1,5 +1,5 @@
 # Variables globales
-@host = http://3.91.156.161:8080
+@host = http://184.72.84.92:8080
 @keycloak_host = https://e73d150e7cc3.ngrok-free.app
 @user = proveedor-prueba@example.com
 @pass = 123
@@ -23,7 +23,7 @@ Content-Type: application/json
 
 
 ### 3. Listar Reviews por serviceId
-GET {{host}}/service-review-questions/reviews?serviceId=5&page=0&size=20
+GET {{host}}/service-review-questions/reviews?serviceId=3&page=0&size=20
 Authorization: Bearer {{auth_token}}
 Content-Type: application/json
 
@@ -34,7 +34,7 @@ Authorization: Bearer {{auth_token}}
 Content-Type: application/json
 
 {
-  "serviceId": 1,
+  "serviceId": 3,
   "userId": 1,
   "stars": 4,
   "commentText": "Excelente servicio, muy recomendable"
@@ -42,13 +42,13 @@ Content-Type: application/json
 
 
 ### 5. Actualizar Review
-PUT {{host}}/service-review-questions/reviews/2
+PUT {{host}}/service-review-questions/reviews/3
 Authorization: Bearer {{auth_token}}
 Content-Type: application/json
 
 {
-  "serviceId": 5,
-  "userId": 2,
+  "serviceId": 3,
+  "userId": 1,
   "stars": 5,
   "commentText": "Actualización: servicio impecable"
 }

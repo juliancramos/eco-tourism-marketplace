@@ -1,5 +1,5 @@
 # Variables globales
-@host = http://3.91.156.161:8080/service-catalog
+@host = http://184.72.84.92:8080/service-catalog
 @keycloak_host = https://e73d150e7cc3.ngrok-free.app
 @user = proveedor-prueba@example.com
 @pass = 123
@@ -88,7 +88,7 @@ Content-Type: application/json
 ### 6. OBTENER SERVICIO ALOJAMIENTO (ID 1)
 ### Validar conexión a Google Maps + Weather + País
 ###############################################
-GET {{host}}/services/46
+GET {{host}}/services/4
 Authorization: Bearer {{auth_token}}
 Content-Type: application/json
 
@@ -103,8 +103,8 @@ Authorization: Bearer {{auth_token}}
 Content-Type: application/json
 
 {
-  "providerId": 29,
-  "categoryId": 3,
+  "providerId": 2,
+  "categoryId": 6,
   "title": "Transporte Aeropuerto",
   "description": "Ruta aeropuerto -> hotel",
   "price": 40.0,
@@ -135,7 +135,7 @@ Content-Type: application/json
 ### 8. OBTENER SERVICIO TRANSPORTE (ID 2)
 ### Valida Google Directions + Weather
 ###############################################
-GET {{host}}/services/52
+GET {{host}}/services/3
 Authorization: Bearer {{auth_token}}
 Content-Type: application/json
 
