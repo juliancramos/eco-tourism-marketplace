@@ -29,8 +29,8 @@ services:
     depends_on:
       - config-server
       - eureka-server
+      - db
     environment:
-      #- CONFIG_SERVER_URI
       - spring_datasource_url
       - spring_datasource_username
       - spring_datasource_password
@@ -55,7 +55,6 @@ services:
     networks:
       - eco-tourism-marketplace-network
 
-
   service-catalog:
     build:
       context: ./service-catalog
@@ -65,6 +64,7 @@ services:
     depends_on:
       - config-server
       - eureka-server
+      - db
     environment:
       - spring_datasource_url
       - spring_datasource_username
@@ -84,6 +84,7 @@ services:
     depends_on:
       - config-server
       - eureka-server
+      - db
     environment:
       - spring_datasource_url
       - spring_datasource_username
@@ -103,6 +104,7 @@ services:
     depends_on:
       - config-server
       - eureka-server
+      - db
     environment:
       - spring_datasource_url
       - spring_datasource_username
@@ -122,6 +124,7 @@ services:
     depends_on:
       - config-server
       - eureka-server
+      - db
     environment:
       - spring_datasource_url
       - spring_datasource_username
@@ -132,9 +135,24 @@ services:
     networks:
       - eco-tourism-marketplace-network
 
-
-
+  db:
+    image: postgres:15
+    container_name: marketplace-db
+    environment:
+      - POSTGRES_DB
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
+    ports:
+      - "5432:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+      - ./db/init:/docker-entrypoint-initdb.d
+    networks:
+      - eco-tourism-marketplace-network
 
 networks:
   eco-tourism-marketplace-network:
     driver: bridge
+
+volumes:
+  db-data:

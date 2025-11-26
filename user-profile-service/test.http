@@ -1,5 +1,5 @@
 # Variables globales
-@host = http://localhost:8080/user-profile-service
+@host = http://3.91.156.161:8080/user-profile-service
 @keycloak_host = https://e73d150e7cc3.ngrok-free.app
 @user = proveedor-prueba@example.com
 @pass = 123
@@ -22,9 +22,9 @@ Authorization: Bearer {{auth_token}}
 Content-Type: application/json
 
 {
-  "email": "cliente1@test.com",
+  "email": "cliente-postgres@test.com",
   "password": "12345678",
-  "name": "Cliente Uno",
+  "name": "Clienteeee Uno",
   "imgUrl": "",
   "roles": ["CLIENT"]
 }
@@ -36,15 +36,15 @@ Authorization: Bearer {{auth_token}}
 Content-Type: application/json
 
 {
-  "email": "proveedor1@test.com",
+  "email": "proveedor-postgres@test.com",
   "password": "12345678",
-  "name": "Proveedor Uno",
+  "name": "Proveedor prueba de postgres",
   "imgUrl": "",
   "roles": ["PROVIDER"],
-  "tradeName": "Comercio Uno",
-  "description": "Proveedor de servicios",
+  "tradeName": "Comercio postgres",
+  "description": "Proveedor ",
   "phoneNumber": "1234567890",
-  "webpage": "http://proveedor1.com"
+  "webpage": "http://proveedorrr1.com"
 }
 
 

@@ -1,5 +1,5 @@
 # Variables globales
-@host = http://localhost:8080/service-catalog
+@host = http://3.91.156.161:8080/service-catalog
 @keycloak_host = https://e73d150e7cc3.ngrok-free.app
 @user = proveedor-prueba@example.com
 @pass = 123
@@ -49,15 +49,15 @@ Content-Type: application/json
 
 ###############################################
 ### 5. CREAR SERVICIO ALOJAMIENTO (Cat 1)
-### 🔥 Prueba: Google Geocoding + Weather + RestCountries
+### Prueba: Google Geocoding + Weather + RestCountries
 ###############################################
 POST {{host}}/services
 Authorization: Bearer {{auth_token}}
 Content-Type: application/json
 
 {
-  "providerId": 29,
-  "categoryId": 41,
+  "providerId": 2,
+  "categoryId": 1,
   "title": "Hotel Casa Bonita",
   "description": "Habitación confortable",
   "price": 120.0,
@@ -86,7 +86,7 @@ Content-Type: application/json
 
 ###############################################
 ### 6. OBTENER SERVICIO ALOJAMIENTO (ID 1)
-### 🔥 Validar conexión a Google Maps + Weather + País
+### Validar conexión a Google Maps + Weather + País
 ###############################################
 GET {{host}}/services/46
 Authorization: Bearer {{auth_token}}
@@ -96,7 +96,7 @@ Content-Type: application/json
 
 ###############################################
 ### 7. CREAR SERVICIO TRANSPORTE (Cat 2)
-### 🔥 Prueba: Google Directions + Weather + RestCountries
+### Prueba: Google Directions + Weather + RestCountries
 ###############################################
 POST {{host}}/services
 Authorization: Bearer {{auth_token}}
@@ -133,7 +133,7 @@ Content-Type: application/json
 
 ###############################################
 ### 8. OBTENER SERVICIO TRANSPORTE (ID 2)
-### 🔥 Valida Google Directions + Weather
+### Valida Google Directions + Weather
 ###############################################
 GET {{host}}/services/52
 Authorization: Bearer {{auth_token}}
