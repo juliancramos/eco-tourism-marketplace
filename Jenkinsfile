@@ -13,8 +13,8 @@ pipeline {
      *     /usr/local/bin/docker-compose
      *****************************************************/
     environment {
-        MVN_CMD = '/usr/local/bin/mvn'
-        DC_CMD  = '/usr/local/bin/docker-compose'
+        MVN_CMD = 'mvn'
+        DC_CMD  = 'docker-compose'
     }
 
     stages {
