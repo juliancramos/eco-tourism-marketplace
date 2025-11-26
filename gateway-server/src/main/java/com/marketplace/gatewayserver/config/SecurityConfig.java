@@ -16,9 +16,13 @@ public class SecurityConfig {
     SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
         return http
                 .cors(cors -> cors
-                        .configurationSource(
-                                request -> new CorsConfiguration()
-                                        .applyPermitDefaultValues()))
+                        .configurationSource(request -> {
+                            CorsConfiguration config = new CorsConfiguration();
+                            config.setAllowedOrigins(java.util.List.of("*"));
+                            config.setAllowedMethods(java.util.List.of("*"));
+                            config.setAllowedHeaders(java.util.List.of("*"));
+                            return config;
+                        }))
                 .csrf(csrf -> csrf
                         .disable())
                 .authorizeExchange(exchange -> exchange
@@ -26,6 +30,10 @@ public class SecurityConfig {
                         .pathMatchers(HttpMethod.POST,
                                 "/keycloak-server/realms/marketplace-realm/protocol/openid-connect/token")
                         .permitAll()
+                        
+                        // Relaxed security for frontend development
+                        .pathMatchers("/services/**").permitAll()
+                        .pathMatchers("/users/**").permitAll()
 
                         // Allow access to simple microservice to certain roles
                         .pathMatchers(HttpMethod.GET, "/simple-microservice/simple/**")
